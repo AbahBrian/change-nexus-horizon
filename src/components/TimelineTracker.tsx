@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -20,14 +21,13 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant }) => {
       initiatedBy: 'Engineering',
       priority: 'High',
       status: 'In Progress',
-      currentStage: 'Quality Review',
-      progress: 65,
+      currentStage: 'Drawing Part',
+      progress: 50,
       timeline: [
-        { stage: 'Initiated', department: 'Engineering', status: 'completed', timestamp: '2024-01-15 09:00' },
-        { stage: 'Design Review', department: 'Engineering', status: 'completed', timestamp: '2024-01-15 14:30' },
-        { stage: 'Quality Review', department: 'Quality', status: 'active', timestamp: '2024-01-16 10:00' },
-        { stage: 'Manufacturing Approval', department: 'Manufacturing', status: 'pending', timestamp: null },
-        { stage: 'Implementation', department: 'Materials', status: 'pending', timestamp: null }
+        { stage: 'TEN Part From SEC', department: 'SEC Department', status: 'completed', timestamp: '2024-01-15 09:00' },
+        { stage: 'Drawing Part', department: 'Engineering', status: 'active', timestamp: '2024-01-15 14:30' },
+        { stage: 'TEN Part List', department: 'Planning', status: 'pending', timestamp: null },
+        { stage: 'Simulation Part Shortage', department: 'Materials', status: 'pending', timestamp: null }
       ]
     },
     {
@@ -36,14 +36,13 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant }) => {
       initiatedBy: 'Materials',
       priority: 'Medium',
       status: 'Completed',
-      currentStage: 'Implementation',
+      currentStage: 'Simulation Part Shortage',
       progress: 100,
       timeline: [
-        { stage: 'Initiated', department: 'Materials', status: 'completed', timestamp: '2024-01-14 08:00' },
-        { stage: 'Design Review', department: 'Engineering', status: 'completed', timestamp: '2024-01-14 15:00' },
-        { stage: 'Quality Review', department: 'Quality', status: 'completed', timestamp: '2024-01-15 09:30' },
-        { stage: 'Manufacturing Approval', department: 'Manufacturing', status: 'completed', timestamp: '2024-01-15 16:00' },
-        { stage: 'Implementation', department: 'Materials', status: 'completed', timestamp: '2024-01-16 12:00' }
+        { stage: 'TEN Part From SEC', department: 'SEC Department', status: 'completed', timestamp: '2024-01-14 08:00' },
+        { stage: 'Drawing Part', department: 'Engineering', status: 'completed', timestamp: '2024-01-14 15:00' },
+        { stage: 'TEN Part List', department: 'Planning', status: 'completed', timestamp: '2024-01-15 09:30' },
+        { stage: 'Simulation Part Shortage', department: 'Materials', status: 'completed', timestamp: '2024-01-16 12:00' }
       ]
     },
     {
@@ -52,14 +51,28 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant }) => {
       initiatedBy: 'Manufacturing',
       priority: 'Critical',
       status: 'Delayed',
-      currentStage: 'Design Review',
+      currentStage: 'TEN Part From SEC',
       progress: 25,
       timeline: [
-        { stage: 'Initiated', department: 'Manufacturing', status: 'completed', timestamp: '2024-01-13 10:00' },
-        { stage: 'Design Review', department: 'Engineering', status: 'delayed', timestamp: '2024-01-14 09:00' },
-        { stage: 'Quality Review', department: 'Quality', status: 'pending', timestamp: null },
-        { stage: 'Manufacturing Approval', department: 'Manufacturing', status: 'pending', timestamp: null },
-        { stage: 'Implementation', department: 'Materials', status: 'pending', timestamp: null }
+        { stage: 'TEN Part From SEC', department: 'SEC Department', status: 'delayed', timestamp: '2024-01-13 10:00' },
+        { stage: 'Drawing Part', department: 'Engineering', status: 'pending', timestamp: null },
+        { stage: 'TEN Part List', department: 'Planning', status: 'pending', timestamp: null },
+        { stage: 'Simulation Part Shortage', department: 'Materials', status: 'pending', timestamp: null }
+      ]
+    },
+    {
+      id: 'ELC-2024-22',
+      partName: 'Electronic Control Unit',
+      initiatedBy: 'Engineering',
+      priority: 'High',
+      status: 'In Progress',
+      currentStage: 'TEN Part List',
+      progress: 75,
+      timeline: [
+        { stage: 'TEN Part From SEC', department: 'SEC Department', status: 'completed', timestamp: '2024-01-16 08:30' },
+        { stage: 'Drawing Part', department: 'Engineering', status: 'completed', timestamp: '2024-01-16 16:00' },
+        { stage: 'TEN Part List', department: 'Planning', status: 'active', timestamp: '2024-01-17 10:00' },
+        { stage: 'Simulation Part Shortage', department: 'Materials', status: 'pending', timestamp: null }
       ]
     }
   ];
@@ -97,6 +110,9 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant }) => {
             <Activity className="w-5 h-5" />
             Real-time Part Change Tracker - {selectedPlant}
           </CardTitle>
+          <p className="text-sm text-slate-600">
+            Flow: TEN Part From SEC → Drawing Part → TEN Part List → Simulation Part Shortage
+          </p>
         </CardHeader>
         <CardContent>
           <div className="flex gap-4 mb-6">
@@ -137,15 +153,15 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant }) => {
                   <div className="relative">
                     <div className="flex items-center justify-between mb-4">
                       {change.timeline.map((stage, index) => (
-                        <div key={index} className="flex flex-col items-center relative z-10">
-                          <div className={`w-8 h-8 rounded-full ${getStatusColor(stage.status)} flex items-center justify-center mb-2`}>
-                            {stage.status === 'completed' && <CheckCircle className="w-4 h-4 text-white" />}
-                            {stage.status === 'active' && <Play className="w-4 h-4 text-white" />}
-                            {stage.status === 'delayed' && <AlertTriangle className="w-4 h-4 text-white" />}
-                            {stage.status === 'pending' && <Pause className="w-4 h-4 text-white" />}
+                        <div key={index} className="flex flex-col items-center relative z-10 flex-1">
+                          <div className={`w-10 h-10 rounded-full ${getStatusColor(stage.status)} flex items-center justify-center mb-2`}>
+                            {stage.status === 'completed' && <CheckCircle className="w-5 h-5 text-white" />}
+                            {stage.status === 'active' && <Play className="w-5 h-5 text-white" />}
+                            {stage.status === 'delayed' && <AlertTriangle className="w-5 h-5 text-white" />}
+                            {stage.status === 'pending' && <Pause className="w-5 h-5 text-white" />}
                           </div>
                           <div className="text-center">
-                            <p className="text-xs font-medium text-slate-800">{stage.stage}</p>
+                            <p className="text-xs font-medium text-slate-800 leading-tight">{stage.stage}</p>
                             <p className="text-xs text-slate-600">{stage.department}</p>
                             {stage.timestamp && (
                               <p className="text-xs text-slate-500 mt-1">{stage.timestamp}</p>
@@ -155,7 +171,7 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant }) => {
                       ))}
                     </div>
                     
-                    <div className="absolute top-4 left-4 right-4 h-0.5 bg-slate-300 -z-0">
+                    <div className="absolute top-5 left-5 right-5 h-0.5 bg-slate-300 -z-0">
                       <div 
                         className="h-full bg-blue-500 transition-all duration-500"
                         style={{ width: `${change.progress}%` }}
