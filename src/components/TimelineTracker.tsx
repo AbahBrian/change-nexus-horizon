@@ -22,12 +22,19 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant }) => {
       priority: 'High',
       status: 'In Progress',
       currentStage: 'Drawing Part',
-      progress: 50,
+      progress: 13,
       timeline: [
-        { stage: 'TEN Part From SEC', department: 'SEC Department', status: 'completed', timestamp: '2024-01-15 09:00' },
-        { stage: 'Drawing Part', department: 'Engineering', status: 'active', timestamp: '2024-01-15 14:30' },
-        { stage: 'TEN Part List', department: 'Planning', status: 'pending', timestamp: null },
-        { stage: 'Simulation Part Shortage', department: 'Materials', status: 'pending', timestamp: null }
+        { stage: 'TEN PART FROM SEC', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-15 09:00' },
+        { stage: 'Drawing Part', department: 'PART ENGINEERING', status: 'active', timestamp: '2024-01-15 14:30' },
+        { stage: 'TEN Part List', department: 'PRODUCT ENGINEERING', status: 'pending', timestamp: null },
+        { stage: 'Price Part', department: 'COST CONTROL', status: 'pending', timestamp: null },
+        { stage: 'ROHS', department: 'PART ENGINEERING', status: 'pending', timestamp: null },
+        { stage: 'PO', department: 'PURCHASING', status: 'pending', timestamp: null },
+        { stage: 'BOM', department: 'GNS+ SYSTEM', status: 'pending', timestamp: null },
+        { stage: 'PART DIMENSION MEASUREMENT', department: 'PART ENGINEERING', status: 'pending', timestamp: null },
+        { stage: 'EVALUATION REPORT', department: 'PRODUCT ENGINEERING', status: 'pending', timestamp: null },
+        { stage: 'LINE TRIAL INFORMATION SHEET', department: 'PART ENGINEERING', status: 'pending', timestamp: null },
+        { stage: 'PART APPROVAL CONFIRMATION', department: 'PART ENGINEERING', status: 'pending', timestamp: null }
       ]
     },
     {
@@ -35,14 +42,21 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant }) => {
       partName: 'Metal Housing Component',
       initiatedBy: 'Materials',
       priority: 'Medium',
-      status: 'Completed',
-      currentStage: 'Simulation Part Shortage',
-      progress: 100,
+      status: 'In Progress',
+      currentStage: 'Price Part',
+      progress: 27,
       timeline: [
-        { stage: 'TEN Part From SEC', department: 'SEC Department', status: 'completed', timestamp: '2024-01-14 08:00' },
-        { stage: 'Drawing Part', department: 'Engineering', status: 'completed', timestamp: '2024-01-14 15:00' },
-        { stage: 'TEN Part List', department: 'Planning', status: 'completed', timestamp: '2024-01-15 09:30' },
-        { stage: 'Simulation Part Shortage', department: 'Materials', status: 'completed', timestamp: '2024-01-16 12:00' }
+        { stage: 'TEN PART FROM SEC', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-14 08:00' },
+        { stage: 'Drawing Part', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-14 15:00' },
+        { stage: 'TEN Part List', department: 'PRODUCT ENGINEERING', status: 'completed', timestamp: '2024-01-15 09:30' },
+        { stage: 'Price Part', department: 'COST CONTROL', status: 'active', timestamp: '2024-01-16 10:00' },
+        { stage: 'ROHS', department: 'PART ENGINEERING', status: 'pending', timestamp: null },
+        { stage: 'PO', department: 'PURCHASING', status: 'pending', timestamp: null },
+        { stage: 'BOM', department: 'GNS+ SYSTEM', status: 'pending', timestamp: null },
+        { stage: 'PART DIMENSION MEASUREMENT', department: 'PART ENGINEERING', status: 'pending', timestamp: null },
+        { stage: 'EVALUATION REPORT', department: 'PRODUCT ENGINEERING', status: 'pending', timestamp: null },
+        { stage: 'LINE TRIAL INFORMATION SHEET', department: 'PART ENGINEERING', status: 'pending', timestamp: null },
+        { stage: 'PART APPROVAL CONFIRMATION', department: 'PART ENGINEERING', status: 'pending', timestamp: null }
       ]
     },
     {
@@ -51,13 +65,20 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant }) => {
       initiatedBy: 'Manufacturing',
       priority: 'Critical',
       status: 'Delayed',
-      currentStage: 'TEN Part From SEC',
-      progress: 25,
+      currentStage: 'TEN PART FROM SEC',
+      progress: 9,
       timeline: [
-        { stage: 'TEN Part From SEC', department: 'SEC Department', status: 'delayed', timestamp: '2024-01-13 10:00' },
-        { stage: 'Drawing Part', department: 'Engineering', status: 'pending', timestamp: null },
-        { stage: 'TEN Part List', department: 'Planning', status: 'pending', timestamp: null },
-        { stage: 'Simulation Part Shortage', department: 'Materials', status: 'pending', timestamp: null }
+        { stage: 'TEN PART FROM SEC', department: 'PART ENGINEERING', status: 'delayed', timestamp: '2024-01-13 10:00' },
+        { stage: 'Drawing Part', department: 'PART ENGINEERING', status: 'pending', timestamp: null },
+        { stage: 'TEN Part List', department: 'PRODUCT ENGINEERING', status: 'pending', timestamp: null },
+        { stage: 'Price Part', department: 'COST CONTROL', status: 'pending', timestamp: null },
+        { stage: 'ROHS', department: 'PART ENGINEERING', status: 'pending', timestamp: null },
+        { stage: 'PO', department: 'PURCHASING', status: 'pending', timestamp: null },
+        { stage: 'BOM', department: 'GNS+ SYSTEM', status: 'pending', timestamp: null },
+        { stage: 'PART DIMENSION MEASUREMENT', department: 'PART ENGINEERING', status: 'pending', timestamp: null },
+        { stage: 'EVALUATION REPORT', department: 'PRODUCT ENGINEERING', status: 'pending', timestamp: null },
+        { stage: 'LINE TRIAL INFORMATION SHEET', department: 'PART ENGINEERING', status: 'pending', timestamp: null },
+        { stage: 'PART APPROVAL CONFIRMATION', department: 'PART ENGINEERING', status: 'pending', timestamp: null }
       ]
     },
     {
@@ -65,14 +86,21 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant }) => {
       partName: 'Electronic Control Unit',
       initiatedBy: 'Engineering',
       priority: 'High',
-      status: 'In Progress',
-      currentStage: 'TEN Part List',
-      progress: 75,
+      status: 'Completed',
+      currentStage: 'PART APPROVAL CONFIRMATION',
+      progress: 100,
       timeline: [
-        { stage: 'TEN Part From SEC', department: 'SEC Department', status: 'completed', timestamp: '2024-01-16 08:30' },
-        { stage: 'Drawing Part', department: 'Engineering', status: 'completed', timestamp: '2024-01-16 16:00' },
-        { stage: 'TEN Part List', department: 'Planning', status: 'active', timestamp: '2024-01-17 10:00' },
-        { stage: 'Simulation Part Shortage', department: 'Materials', status: 'pending', timestamp: null }
+        { stage: 'TEN PART FROM SEC', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-16 08:30' },
+        { stage: 'Drawing Part', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-16 16:00' },
+        { stage: 'TEN Part List', department: 'PRODUCT ENGINEERING', status: 'completed', timestamp: '2024-01-17 10:00' },
+        { stage: 'Price Part', department: 'COST CONTROL', status: 'completed', timestamp: '2024-01-17 14:30' },
+        { stage: 'ROHS', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-18 09:00' },
+        { stage: 'PO', department: 'PURCHASING', status: 'completed', timestamp: '2024-01-18 15:30' },
+        { stage: 'BOM', department: 'GNS+ SYSTEM', status: 'completed', timestamp: '2024-01-19 11:00' },
+        { stage: 'PART DIMENSION MEASUREMENT', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-19 16:30' },
+        { stage: 'EVALUATION REPORT', department: 'PRODUCT ENGINEERING', status: 'completed', timestamp: '2024-01-20 10:30' },
+        { stage: 'LINE TRIAL INFORMATION SHEET', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-20 14:00' },
+        { stage: 'PART APPROVAL CONFIRMATION', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-21 09:30' }
       ]
     }
   ];
@@ -111,7 +139,7 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant }) => {
             Real-time Part Change Tracker - {selectedPlant}
           </CardTitle>
           <p className="text-sm text-slate-600">
-            Flow: TEN Part From SEC → Drawing Part → TEN Part List → Simulation Part Shortage
+            Complete 11-Step Flow: TEN PART FROM SEC → Drawing Part → TEN Part List → Price Part → ROHS → PO → BOM → PART DIMENSION MEASUREMENT → EVALUATION REPORT → LINE TRIAL INFORMATION SHEET → PART APPROVAL CONFIRMATION
           </p>
         </CardHeader>
         <CardContent>
@@ -150,32 +178,28 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant }) => {
                     </div>
                   </div>
 
-                  <div className="relative">
-                    <div className="flex items-center justify-between mb-4">
+                  <div className="relative mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                       {change.timeline.map((stage, index) => (
-                        <div key={index} className="flex flex-col items-center relative z-10 flex-1">
-                          <div className={`w-10 h-10 rounded-full ${getStatusColor(stage.status)} flex items-center justify-center mb-2`}>
-                            {stage.status === 'completed' && <CheckCircle className="w-5 h-5 text-white" />}
-                            {stage.status === 'active' && <Play className="w-5 h-5 text-white" />}
-                            {stage.status === 'delayed' && <AlertTriangle className="w-5 h-5 text-white" />}
-                            {stage.status === 'pending' && <Pause className="w-5 h-5 text-white" />}
+                        <div key={index} className="flex flex-col items-center p-3 bg-white rounded-lg border relative">
+                          <div className={`w-8 h-8 rounded-full ${getStatusColor(stage.status)} flex items-center justify-center mb-2 text-xs font-bold text-white`}>
+                            {index + 1}
                           </div>
                           <div className="text-center">
-                            <p className="text-xs font-medium text-slate-800 leading-tight">{stage.stage}</p>
-                            <p className="text-xs text-slate-600">{stage.department}</p>
+                            <p className="text-xs font-medium text-slate-800 leading-tight mb-1">{stage.stage}</p>
+                            <p className="text-xs text-blue-600 font-medium">{stage.department}</p>
                             {stage.timestamp && (
                               <p className="text-xs text-slate-500 mt-1">{stage.timestamp}</p>
                             )}
                           </div>
+                          <div className={`absolute top-2 right-2 w-4 h-4 ${getStatusColor(stage.status)} rounded-full flex items-center justify-center`}>
+                            {stage.status === 'completed' && <CheckCircle className="w-3 h-3 text-white" />}
+                            {stage.status === 'active' && <Play className="w-3 h-3 text-white" />}
+                            {stage.status === 'delayed' && <AlertTriangle className="w-3 h-3 text-white" />}
+                            {stage.status === 'pending' && <Pause className="w-3 h-3 text-white" />}
+                          </div>
                         </div>
                       ))}
-                    </div>
-                    
-                    <div className="absolute top-5 left-5 right-5 h-0.5 bg-slate-300 -z-0">
-                      <div 
-                        className="h-full bg-blue-500 transition-all duration-500"
-                        style={{ width: `${change.progress}%` }}
-                      />
                     </div>
                   </div>
 
