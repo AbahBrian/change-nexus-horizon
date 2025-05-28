@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Clock, AlertTriangle, CheckCircle, Users, Activity, Bell } from 'lucide-react';
+import { Clock, AlertTriangle, CheckCircle, Users, Activity, Bell, User } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import TimelineTracker from '@/components/TimelineTracker';
 import TaskDashboard from '@/components/TaskDashboard';
 import PrioritySimulator from '@/components/PrioritySimulator';
@@ -28,11 +29,23 @@ const Dashboard = () => {
       <NavigationSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       
       <div className="flex-1 p-6">
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-4">
-            <div>
-              <h1 className="text-3xl font-bold text-slate-800">4M Part Change Management</h1>
-              <p className="text-slate-600">Real-time tracking and management platform</p>
+        {/* User Profile Header */}
+        <div className="mb-6 bg-white rounded-lg shadow-sm border p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Avatar className="w-12 h-12">
+                <AvatarImage src="/placeholder.svg" />
+                <AvatarFallback className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                  <User className="w-6 h-6" />
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <h2 className="text-xl font-semibold text-slate-800">John Manager</h2>
+                <p className="text-slate-600">Plant Supervisor • Engineering Department</p>
+                <Badge variant="secondary" className="mt-1">
+                  Level 4 - Senior Manager
+                </Badge>
+              </div>
             </div>
             <div className="flex items-center gap-4">
               <select 
@@ -48,6 +61,15 @@ const Dashboard = () => {
                 <Bell className="w-4 h-4 mr-2" />
                 Notifications
               </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <h1 className="text-3xl font-bold text-slate-800">4M Part Change Management</h1>
+              <p className="text-slate-600">Real-time tracking and management platform</p>
             </div>
           </div>
 
