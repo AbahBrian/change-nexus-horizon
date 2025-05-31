@@ -6,7 +6,7 @@ import {
   Activity, 
   Clock, 
   BarChart3, 
-  Zap, 
+  User, 
   Layout, 
   Settings, 
   Users,
@@ -23,7 +23,7 @@ const NavigationSidebar: React.FC<NavigationSidebarProps> = ({ activeTab, setAct
     { id: 'overview', label: 'Overview', icon: Layout },
     { id: 'tracker', label: 'Real-time Tracker', icon: Activity },
     { id: 'tasks', label: 'Task Dashboard', icon: Clock },
-    { id: 'priority', label: 'Priority Engine', icon: Zap },
+    { id: 'mytasks', label: 'My Tasks', icon: User },
     { id: 'kpi', label: 'KPI Dashboard', icon: BarChart3 },
   ];
 

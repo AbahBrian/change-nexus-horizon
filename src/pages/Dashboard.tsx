@@ -7,7 +7,7 @@ import { Clock, AlertTriangle, CheckCircle, Users, Activity, Bell, User, FileTex
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import TimelineTracker from '@/components/TimelineTracker';
 import TaskDashboard from '@/components/TaskDashboard';
-import PrioritySimulator from '@/components/PrioritySimulator';
+import MyTaskPage from '@/components/MyTaskPage';
 import KPIDashboard from '@/components/KPIDashboard';
 import NavigationSidebar from '@/components/NavigationSidebar';
 
@@ -237,7 +237,7 @@ const Dashboard = () => {
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="tracker">Real-time Tracker</TabsTrigger>
             <TabsTrigger value="tasks">Task Dashboard</TabsTrigger>
-            <TabsTrigger value="priority">Priority Engine</TabsTrigger>
+            <TabsTrigger value="mytasks">My Tasks</TabsTrigger>
             <TabsTrigger value="kpi">KPI Dashboard</TabsTrigger>
           </TabsList>
 
@@ -318,8 +318,8 @@ const Dashboard = () => {
             <TaskDashboard selectedPlant={selectedPlant} />
           </TabsContent>
 
-          <TabsContent value="priority">
-            <PrioritySimulator selectedPlant={selectedPlant} />
+          <TabsContent value="mytasks">
+            <MyTaskPage selectedPlant={selectedPlant} />
           </TabsContent>
 
           <TabsContent value="kpi">
