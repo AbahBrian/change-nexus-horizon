@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -354,8 +355,8 @@ const KPIDashboard: React.FC<KPIDashboardProps> = ({ selectedPlant }) => {
                       <Line type="monotone" dataKey="manufacturing" stroke="#f97316" strokeWidth={2} />
                       <Line type="monotone" dataKey="materials" stroke="#ef4444" strokeWidth={2} />
                     </LineChart>
-                  </CardContent>
-                </Card>
+                  </ResponsiveContainer>
+                </CardContent>
               </Card>
             </TabsContent>
 
