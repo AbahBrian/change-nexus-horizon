@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Clock, CheckCircle, AlertTriangle, Play, Pause, Activity, ArrowLeft, User, Calendar, FileText } from 'lucide-react';
+import { Clock, CheckCircle, AlertTriangle, Play, Pause, Activity, ArrowLeft, User, Calendar, FileText, Search, Filter } from 'lucide-react';
 
 interface TimelineTrackerProps {
   selectedPlant: string;
@@ -123,6 +123,23 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant, highli
     }
   ];
 
+  // Real-time filtering using useMemo for performance
+  const filteredChanges = useMemo(() => {
+    return partChanges.filter(change => {
+      // Search by part name or ID (case insensitive)
+      const searchLower = searchTerm.toLowerCase();
+      const matchesSearch = searchTerm === '' || 
+        change.partName.toLowerCase().includes(searchLower) ||
+        change.id.toLowerCase().includes(searchLower);
+      
+      // Filter by status
+      const matchesStatus = filterStatus === 'all' || 
+        change.status.toLowerCase() === filterStatus.toLowerCase();
+      
+      return matchesSearch && matchesStatus;
+    });
+  }, [searchTerm, filterStatus]);
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed': return 'bg-green-500';
@@ -141,19 +158,17 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant, highli
     }
   };
 
-  const filteredChanges = partChanges.filter(change => {
-    const matchesSearch = change.partName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         change.id.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = filterStatus === 'all' || change.status.toLowerCase() === filterStatus.toLowerCase();
-    return matchesSearch && matchesStatus;
-  });
-
   const handleStageClick = (stage: any, partChange: any) => {
     setSelectedStage({
       ...stage,
       partId: partChange.id,
       partName: partChange.partName
     });
+  };
+
+  const clearFilters = () => {
+    setSearchTerm('');
+    setFilterStatus('all');
   };
 
   if (selectedStage) {
@@ -272,25 +287,77 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant, highli
           </p>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-4 mb-6">
-            <Input
-              placeholder="Search by part name or ID..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1"
-            />
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-4 py-2 border border-slate-300 rounded-lg"
-            >
-              <option value="all">All Status</option>
-              <option value="in progress">In Progress</option>
-              <option value="completed">Completed</option>
-              <option value="delayed">Delayed</option>
-            </select>
+          {/* Enhanced Filter Section */}
+          <div className="bg-slate-50 p-4 rounded-lg mb-6 space-y-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Filter className="w-4 h-4 text-slate-600" />
+              <span className="text-sm font-medium text-slate-700">Real-time Filters</span>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Search Input */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Input
+                  placeholder="Search by part name or ID..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 bg-white"
+                />
+              </div>
+
+              {/* Status Filter */}
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="px-4 py-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="all">All Status</option>
+                <option value="in progress">In Progress</option>
+                <option value="completed">Completed</option>
+                <option value="delayed">Delayed</option>
+              </select>
+
+              {/* Clear Filters */}
+              <Button 
+                variant="outline" 
+                onClick={clearFilters}
+                className="flex items-center gap-2"
+              >
+                Clear Filters
+              </Button>
+            </div>
+
+            {/* Results Counter */}
+            <div className="flex items-center justify-between text-sm text-slate-600">
+              <span>
+                Showing {filteredChanges.length} of {partChanges.length} parts
+              </span>
+              {(searchTerm || filterStatus !== 'all') && (
+                <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                  Filters Active
+                </Badge>
+              )}
+            </div>
           </div>
 
+          {/* No Results Message */}
+          {filteredChanges.length === 0 && (
+            <Card className="bg-slate-50 border-dashed border-2 border-slate-300">
+              <CardContent className="p-8 text-center">
+                <Search className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-600 mb-2">No parts found</h3>
+                <p className="text-slate-500 mb-4">
+                  No parts match your current search criteria. Try adjusting your filters.
+                </p>
+                <Button variant="outline" onClick={clearFilters}>
+                  Clear all filters
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Filtered Results */}
           <div className="space-y-6">
             {filteredChanges.map((change) => (
               <Card 
