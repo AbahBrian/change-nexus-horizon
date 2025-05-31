@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -7,12 +7,30 @@ import { Clock, CheckCircle, AlertTriangle, Play, Pause, Activity, ArrowLeft, Us
 
 interface TimelineTrackerProps {
   selectedPlant: string;
+  highlightPartId?: string | null;
 }
 
-const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant }) => {
+const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant, highlightPartId }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedStage, setSelectedStage] = useState<any>(null);
+
+  // Clear highlighted part when component unmounts or highlightPartId changes
+  useEffect(() => {
+    if (highlightPartId) {
+      // Clear any existing search/filters to show the highlighted part
+      setSearchTerm('');
+      setFilterStatus('all');
+      
+      // Scroll to the highlighted part after a short delay
+      setTimeout(() => {
+        const element = document.getElementById(`part-${highlightPartId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+    }
+  }, [highlightPartId]);
 
   const partChanges = [
     {
@@ -275,13 +293,24 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant }) => {
 
           <div className="space-y-6">
             {filteredChanges.map((change) => (
-              <Card key={change.id} className="bg-slate-50 border-l-4 border-l-blue-500">
+              <Card 
+                key={change.id} 
+                id={`part-${change.id}`}
+                className={`bg-slate-50 border-l-4 border-l-blue-500 ${
+                  highlightPartId === change.id ? 'ring-4 ring-blue-200 shadow-lg' : ''
+                }`}
+              >
                 <CardContent className="p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <h3 className="text-lg font-semibold text-slate-800">{change.partName}</h3>
                       <p className="text-sm text-slate-600">ID: {change.id}</p>
                       <p className="text-sm text-slate-600">Initiated by: {change.initiatedBy}</p>
+                      {highlightPartId === change.id && (
+                        <Badge className="mt-2 bg-blue-100 text-blue-800">
+                          Selected from Recent Activity
+                        </Badge>
+                      )}
                     </div>
                     <div className="text-right">
                       <Badge className={getPriorityColor(change.priority)}>{change.priority}</Badge>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,6 +14,7 @@ import NavigationSidebar from '@/components/NavigationSidebar';
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedPlant, setSelectedPlant] = useState('Plant A');
+  const [selectedPartId, setSelectedPartId] = useState<string | null>(null);
 
   const overviewStats = [
     { title: 'Active Changes', value: '47', trend: '+12%', icon: Activity, color: 'text-blue-500' },
@@ -34,7 +34,8 @@ const Dashboard = () => {
       priority: 'High',
       assignee: 'John Smith',
       location: 'Plant A - Building 2',
-      details: 'Circuit board specifications have been updated to meet new performance requirements'
+      details: 'Circuit board specifications have been updated to meet new performance requirements',
+      partId: 'PCB-2024-A'
     },
     {
       id: 'ACT-002',
@@ -46,7 +47,8 @@ const Dashboard = () => {
       priority: 'Medium',
       assignee: 'Sarah Johnson',
       location: 'Plant A - Quality Lab',
-      details: 'All dimensional measurements are within specified tolerances'
+      details: 'All dimensional measurements are within specified tolerances',
+      partId: 'MET-2024-15'
     },
     {
       id: 'ACT-003',
@@ -58,7 +60,8 @@ const Dashboard = () => {
       priority: 'Critical',
       assignee: 'Mike Davis',
       location: 'Plant A - Production Floor',
-      details: 'Manufacturing team requires clarification on material specifications'
+      details: 'Manufacturing team requires clarification on material specifications',
+      partId: 'MAC-2024-08'
     },
     {
       id: 'ACT-004',
@@ -70,7 +73,8 @@ const Dashboard = () => {
       priority: 'High',
       assignee: 'System Auto',
       location: 'Automated System',
-      details: 'BOM includes 127 components with cost breakdown analysis'
+      details: 'BOM includes 127 components with cost breakdown analysis',
+      partId: 'ELC-2024-22'
     },
     {
       id: 'ACT-005',
@@ -82,7 +86,8 @@ const Dashboard = () => {
       priority: 'Medium',
       assignee: 'Lisa Chen',
       location: 'Plant A - Finance Wing',
-      details: 'Total cost reduced by 8% through supplier negotiations'
+      details: 'Total cost reduced by 8% through supplier negotiations',
+      partId: 'PLT-2024-33'
     },
     {
       id: 'ACT-006',
@@ -94,7 +99,8 @@ const Dashboard = () => {
       priority: 'High',
       assignee: 'Tom Wilson',
       location: 'Plant A - Compliance Office',
-      details: 'All materials meet EU ROHS directive requirements'
+      details: 'All materials meet EU ROHS directive requirements',
+      partId: 'SEN-2024-11'
     },
     {
       id: 'ACT-007',
@@ -106,7 +112,8 @@ const Dashboard = () => {
       priority: 'Medium',
       assignee: 'Anna Brown',
       location: 'Plant A - Procurement',
-      details: 'Expected delivery within 2 weeks, tracking number provided'
+      details: 'Expected delivery within 2 weeks, tracking number provided',
+      partId: 'CON-2024-44'
     },
     {
       id: 'ACT-008',
@@ -118,7 +125,8 @@ const Dashboard = () => {
       priority: 'High',
       assignee: 'David Kim',
       location: 'Plant A - Test Line 3',
-      details: 'Trial planned for next Tuesday with full quality monitoring'
+      details: 'Trial planned for next Tuesday with full quality monitoring',
+      partId: 'MOT-2024-19'
     }
   ];
 
@@ -148,6 +156,11 @@ const Dashboard = () => {
       case 'scheduled': return <Calendar className="w-4 h-4" />;
       default: return <Activity className="w-4 h-4" />;
     }
+  };
+
+  const handleActivityClick = (activity: any) => {
+    setSelectedPartId(activity.partId);
+    setActiveTab('tracker');
   };
 
   return (
@@ -242,7 +255,11 @@ const Dashboard = () => {
               <CardContent>
                 <div className="space-y-4">
                   {recentActivities.map((activity) => (
-                    <Card key={activity.id} className={`border-2 ${getActivityTypeColor(activity.type)} hover:shadow-md transition-all duration-200`}>
+                    <Card 
+                      key={activity.id} 
+                      className={`border-2 ${getActivityTypeColor(activity.type)} hover:shadow-md transition-all duration-200 cursor-pointer`}
+                      onClick={() => handleActivityClick(activity)}
+                    >
                       <CardContent className="p-4">
                         <div className="flex items-start gap-4">
                           <div className={`w-10 h-10 rounded-full ${getActivityTypeColor(activity.type)} flex items-center justify-center`}>
@@ -294,7 +311,7 @@ const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="tracker">
-            <TimelineTracker selectedPlant={selectedPlant} />
+            <TimelineTracker selectedPlant={selectedPlant} highlightPartId={selectedPartId} />
           </TabsContent>
 
           <TabsContent value="tasks">
