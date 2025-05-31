@@ -3,9 +3,8 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Clock, AlertTriangle, CheckCircle, Users, Activity, Bell, User } from 'lucide-react';
+import { Clock, AlertTriangle, CheckCircle, Users, Activity, Bell, User, FileText, TrendingUp, Calendar, MapPin } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import TimelineTracker from '@/components/TimelineTracker';
 import TaskDashboard from '@/components/TaskDashboard';
@@ -23,6 +22,133 @@ const Dashboard = () => {
     { title: 'Critical Priority', value: '8', trend: '+2', icon: AlertTriangle, color: 'text-red-500' },
     { title: 'Completed Today', value: '15', trend: '+8%', icon: CheckCircle, color: 'text-green-500' }
   ];
+
+  const recentActivities = [
+    {
+      id: 'ACT-001',
+      title: 'Part PCB-2024-A initiated',
+      description: 'New circuit board module request submitted for approval',
+      department: 'Engineering Department',
+      time: '2 minutes ago',
+      type: 'initiated',
+      priority: 'High',
+      assignee: 'John Smith',
+      location: 'Plant A - Building 2',
+      details: 'Circuit board specifications have been updated to meet new performance requirements'
+    },
+    {
+      id: 'ACT-002',
+      title: 'Part MET-2024-15 approved',
+      description: 'Metal housing component has passed quality assessment',
+      department: 'Quality Department',
+      time: '5 minutes ago',
+      type: 'approved',
+      priority: 'Medium',
+      assignee: 'Sarah Johnson',
+      location: 'Plant A - Quality Lab',
+      details: 'All dimensional measurements are within specified tolerances'
+    },
+    {
+      id: 'ACT-003',
+      title: 'Part MAC-2024-08 pending review',
+      description: 'Machinery component awaiting technical review',
+      department: 'Manufacturing',
+      time: '12 minutes ago',
+      type: 'pending',
+      priority: 'Critical',
+      assignee: 'Mike Davis',
+      location: 'Plant A - Production Floor',
+      details: 'Manufacturing team requires clarification on material specifications'
+    },
+    {
+      id: 'ACT-004',
+      title: 'BOM Generation Completed',
+      description: 'Bill of Materials generated for ELC-2024-22',
+      department: 'GNS+ System',
+      time: '18 minutes ago',
+      type: 'completed',
+      priority: 'High',
+      assignee: 'System Auto',
+      location: 'Automated System',
+      details: 'BOM includes 127 components with cost breakdown analysis'
+    },
+    {
+      id: 'ACT-005',
+      title: 'Price Analysis Updated',
+      description: 'Cost control review completed for PLT-2024-33',
+      department: 'Cost Control',
+      time: '25 minutes ago',
+      type: 'updated',
+      priority: 'Medium',
+      assignee: 'Lisa Chen',
+      location: 'Plant A - Finance Wing',
+      details: 'Total cost reduced by 8% through supplier negotiations'
+    },
+    {
+      id: 'ACT-006',
+      title: 'ROHS Compliance Verified',
+      description: 'Environmental compliance check passed for SEN-2024-11',
+      department: 'Part Engineering',
+      time: '32 minutes ago',
+      type: 'verified',
+      priority: 'High',
+      assignee: 'Tom Wilson',
+      location: 'Plant A - Compliance Office',
+      details: 'All materials meet EU ROHS directive requirements'
+    },
+    {
+      id: 'ACT-007',
+      title: 'Purchase Order Issued',
+      description: 'PO-24567 sent to supplier for CON-2024-44',
+      department: 'Purchasing',
+      time: '45 minutes ago',
+      type: 'issued',
+      priority: 'Medium',
+      assignee: 'Anna Brown',
+      location: 'Plant A - Procurement',
+      details: 'Expected delivery within 2 weeks, tracking number provided'
+    },
+    {
+      id: 'ACT-008',
+      title: 'Line Trial Scheduled',
+      description: 'Production trial scheduled for MOT-2024-19',
+      department: 'Part Engineering',
+      time: '1 hour ago',
+      type: 'scheduled',
+      priority: 'High',
+      assignee: 'David Kim',
+      location: 'Plant A - Test Line 3',
+      details: 'Trial planned for next Tuesday with full quality monitoring'
+    }
+  ];
+
+  const getActivityTypeColor = (type: string) => {
+    switch (type) {
+      case 'initiated': return 'bg-blue-50 border-blue-200 text-blue-800';
+      case 'approved': return 'bg-green-50 border-green-200 text-green-800';
+      case 'pending': return 'bg-orange-50 border-orange-200 text-orange-800';
+      case 'completed': return 'bg-green-50 border-green-200 text-green-800';
+      case 'updated': return 'bg-purple-50 border-purple-200 text-purple-800';
+      case 'verified': return 'bg-teal-50 border-teal-200 text-teal-800';
+      case 'issued': return 'bg-indigo-50 border-indigo-200 text-indigo-800';
+      case 'scheduled': return 'bg-yellow-50 border-yellow-200 text-yellow-800';
+      default: return 'bg-gray-50 border-gray-200 text-gray-800';
+    }
+  };
+
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case 'initiated': return <FileText className="w-4 h-4" />;
+      case 'approved': return <CheckCircle className="w-4 h-4" />;
+      case 'pending': return <Clock className="w-4 h-4" />;
+      case 'completed': return <CheckCircle className="w-4 h-4" />;
+      case 'updated': return <TrendingUp className="w-4 h-4" />;
+      case 'verified': return <CheckCircle className="w-4 h-4" />;
+      case 'issued': return <FileText className="w-4 h-4" />;
+      case 'scheduled': return <Calendar className="w-4 h-4" />;
+      default: return <Activity className="w-4 h-4" />;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
@@ -103,76 +229,68 @@ const Dashboard = () => {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-white shadow-sm">
-                <CardHeader>
-                  <CardTitle>Recent Activity</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      <div className="flex-1">
-                        <p className="font-medium">Part PCB-2024-A initiated</p>
-                        <p className="text-sm text-slate-600">Engineering Department - 2 minutes ago</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      <div className="flex-1">
-                        <p className="font-medium">Part MET-2024-15 approved</p>
-                        <p className="text-sm text-slate-600">Quality Department - 5 minutes ago</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3 p-3 bg-orange-50 rounded-lg">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                      <div className="flex-1">
-                        <p className="font-medium">Part MAC-2024-08 pending review</p>
-                        <p className="text-sm text-slate-600">Manufacturing - 12 minutes ago</p>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-white shadow-sm">
-                <CardHeader>
-                  <CardTitle>Department Performance</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-sm font-medium">Engineering</span>
-                        <span className="text-sm text-slate-600">92%</span>
-                      </div>
-                      <Progress value={92} className="h-2" />
-                    </div>
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-sm font-medium">Quality</span>
-                        <span className="text-sm text-slate-600">88%</span>
-                      </div>
-                      <Progress value={88} className="h-2" />
-                    </div>
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-sm font-medium">Manufacturing</span>
-                        <span className="text-sm text-slate-600">94%</span>
-                      </div>
-                      <Progress value={94} className="h-2" />
-                    </div>
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-sm font-medium">Materials</span>
-                        <span className="text-sm text-slate-600">85%</span>
-                      </div>
-                      <Progress value={85} className="h-2" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <Card className="bg-white shadow-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="w-5 h-5" />
+                  Recent Activity - Live Updates
+                </CardTitle>
+                <p className="text-sm text-slate-600">
+                  Real-time activity feed showing all part change operations across {selectedPlant}
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {recentActivities.map((activity) => (
+                    <Card key={activity.id} className={`border-2 ${getActivityTypeColor(activity.type)} hover:shadow-md transition-all duration-200`}>
+                      <CardContent className="p-4">
+                        <div className="flex items-start gap-4">
+                          <div className={`w-10 h-10 rounded-full ${getActivityTypeColor(activity.type)} flex items-center justify-center`}>
+                            {getActivityIcon(activity.type)}
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between mb-2">
+                              <div>
+                                <h4 className="font-semibold text-slate-800">{activity.title}</h4>
+                                <p className="text-sm text-slate-600">{activity.description}</p>
+                                <p className="text-xs text-slate-500 mt-1">{activity.details}</p>
+                              </div>
+                              <div className="text-right">
+                                <Badge className={`text-xs ${activity.priority === 'Critical' ? 'bg-red-100 text-red-800' : 
+                                  activity.priority === 'High' ? 'bg-orange-100 text-orange-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                                  {activity.priority}
+                                </Badge>
+                                <p className="text-xs text-slate-500 mt-1">{activity.time}</p>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+                              <div className="flex items-center gap-1">
+                                <Users className="w-3 h-3 text-slate-500" />
+                                <span className="text-slate-600">{activity.department}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <User className="w-3 h-3 text-slate-500" />
+                                <span className="text-slate-600">{activity.assignee}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <MapPin className="w-3 h-3 text-slate-500" />
+                                <span className="text-slate-600">{activity.location}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+                <div className="mt-6 text-center">
+                  <Button variant="outline" className="w-full">
+                    <Activity className="w-4 h-4 mr-2" />
+                    Load More Activities
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="tracker">

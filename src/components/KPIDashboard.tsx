@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-import { BarChart3, TrendingUp, Clock, Target, AlertTriangle, CheckCircle } from 'lucide-react';
+import { BarChart3, TrendingUp, Clock, Target, AlertTriangle, CheckCircle, Users } from 'lucide-react';
 
 interface KPIDashboardProps {
   selectedPlant: string;
@@ -113,11 +113,12 @@ const KPIDashboard: React.FC<KPIDashboardProps> = ({ selectedPlant }) => {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-6">
+            <TabsList className="grid w-full grid-cols-5 mb-6">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="departments">Departments</TabsTrigger>
-              <TabsTrigger value="trends">Trends</TabsTrigger>
               <TabsTrigger value="performance">Performance</TabsTrigger>
+              <TabsTrigger value="trends">Trends</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
@@ -264,29 +265,48 @@ const KPIDashboard: React.FC<KPIDashboardProps> = ({ selectedPlant }) => {
               </div>
             </TabsContent>
 
-            <TabsContent value="trends" className="space-y-6">
-              <Card>
+            <TabsContent value="performance" className="space-y-6">
+              <Card className="bg-white shadow-sm">
                 <CardHeader>
-                  <CardTitle>Response Time Trends by Department</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="w-5 h-5" />
+                    Department Performance Overview
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ResponsiveContainer width="100%" height={400}>
-                    <LineChart data={responseTimeData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="time" />
-                      <YAxis />
-                      <Tooltip />
-                      <Line type="monotone" dataKey="engineering" stroke="#3b82f6" strokeWidth={2} />
-                      <Line type="monotone" dataKey="quality" stroke="#22c55e" strokeWidth={2} />
-                      <Line type="monotone" dataKey="manufacturing" stroke="#f97316" strokeWidth={2} />
-                      <Line type="monotone" dataKey="materials" stroke="#ef4444" strokeWidth={2} />
-                    </LineChart>
-                  </ResponsiveContainer>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between mb-2">
+                        <span className="text-sm font-medium">Engineering</span>
+                        <span className="text-sm text-slate-600">92%</span>
+                      </div>
+                      <Progress value={92} className="h-2" />
+                    </div>
+                    <div>
+                      <div className="flex justify-between mb-2">
+                        <span className="text-sm font-medium">Quality</span>
+                        <span className="text-sm text-slate-600">88%</span>
+                      </div>
+                      <Progress value={88} className="h-2" />
+                    </div>
+                    <div>
+                      <div className="flex justify-between mb-2">
+                        <span className="text-sm font-medium">Manufacturing</span>
+                        <span className="text-sm text-slate-600">94%</span>
+                      </div>
+                      <Progress value={94} className="h-2" />
+                    </div>
+                    <div>
+                      <div className="flex justify-between mb-2">
+                        <span className="text-sm font-medium">Materials</span>
+                        <span className="text-sm text-slate-600">85%</span>
+                      </div>
+                      <Progress value={85} className="h-2" />
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
-            </TabsContent>
 
-            <TabsContent value="performance" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <Card className="bg-green-50 border-green-200">
                   <CardContent className="p-6">
@@ -312,6 +332,56 @@ const KPIDashboard: React.FC<KPIDashboardProps> = ({ selectedPlant }) => {
                     <p className="text-2xl font-bold text-blue-900">Quality</p>
                     <p className="text-sm text-blue-700">3.8h average response</p>
                     <p className="text-sm text-blue-700">16.2h completion time</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="trends" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Response Time Trends by Department</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <LineChart data={responseTimeData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="time" />
+                      <YAxis />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="engineering" stroke="#3b82f6" strokeWidth={2} />
+                      <Line type="monotone" dataKey="quality" stroke="#22c55e" strokeWidth={2} />
+                      <Line type="monotone" dataKey="manufacturing" stroke="#f97316" strokeWidth={2} />
+                      <Line type="monotone" dataKey="materials" stroke="#ef4444" strokeWidth={2} />
+                    </LineChart>
+                  </CardContent>
+                </Card>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="analytics" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <Card className="bg-gradient-to-r from-blue-50 to-indigo-100">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold text-blue-800 mb-2">Efficiency Score</h3>
+                    <p className="text-3xl font-bold text-blue-900">87.3</p>
+                    <p className="text-sm text-blue-700">+5.2 from last month</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-r from-purple-50 to-pink-100">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold text-purple-800 mb-2">Quality Index</h3>
+                    <p className="text-3xl font-bold text-purple-900">94.7</p>
+                    <p className="text-sm text-purple-700">+2.1 from last month</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-r from-teal-50 to-cyan-100">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold text-teal-800 mb-2">Process Speed</h3>
+                    <p className="text-3xl font-bold text-teal-900">91.2</p>
+                    <p className="text-sm text-teal-700">+3.8 from last month</p>
                   </CardContent>
                 </Card>
               </div>
