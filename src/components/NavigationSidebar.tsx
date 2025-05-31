@@ -28,7 +28,7 @@ const NavigationSidebar: React.FC<NavigationSidebarProps> = ({ activeTab, setAct
   ];
 
   return (
-    <div className="w-64 bg-white border-r border-slate-200 p-4">
+    <div className="w-64 bg-white border-r border-slate-200 p-4 h-screen flex flex-col">
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
@@ -41,7 +41,7 @@ const NavigationSidebar: React.FC<NavigationSidebarProps> = ({ activeTab, setAct
         </div>
       </div>
 
-      <nav className="space-y-2 mb-8">
+      <nav className="space-y-2 mb-8 flex-1">
         {navigationItems.map((item) => (
           <Button
             key={item.id}
@@ -59,23 +59,23 @@ const NavigationSidebar: React.FC<NavigationSidebarProps> = ({ activeTab, setAct
         ))}
       </nav>
 
-      <Card className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-        <div className="text-center">
-          <h3 className="font-semibold text-slate-800 mb-2">System Status</h3>
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span>Uptime</span>
-              <span className="text-green-600 font-medium">99.9%</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span>Response</span>
-              <span className="text-green-600 font-medium">&lt;50ms</span>
+      <div className="mt-auto">
+        <Card className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200 mb-4">
+          <div className="text-center">
+            <h3 className="font-semibold text-slate-800 mb-2">System Status</h3>
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>Uptime</span>
+                <span className="text-green-600 font-medium">99.9%</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span>Response</span>
+                <span className="text-green-600 font-medium">&lt;50ms</span>
+              </div>
             </div>
           </div>
-        </div>
-      </Card>
+        </Card>
 
-      <div className="absolute bottom-4 left-4 right-4">
         <div className="flex items-center gap-3 p-3 bg-slate-100 rounded-lg mb-2">
           <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
             <Users className="w-4 h-4 text-white" />
@@ -85,7 +85,8 @@ const NavigationSidebar: React.FC<NavigationSidebarProps> = ({ activeTab, setAct
             <p className="text-xs text-slate-600">Plant Supervisor</p>
           </div>
         </div>
-        <Button variant="ghost" className="w-full justify-start gap-3 text-slate-600">
+        
+        <Button variant="ghost" className="w-full justify-start gap-3 text-slate-600 hover:text-red-600 hover:bg-red-50">
           <LogOut className="w-4 h-4" />
           Sign Out
         </Button>
