@@ -4,6 +4,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Clock, CheckCircle, AlertTriangle, Play, Pause, Activity, ArrowLeft, User, Calendar, FileText, Search, Filter } from 'lucide-react';
+import ScheduleMeetingSheet from '@/components/ScheduleMeetingSheet';
+import ViewDocumentsSheet from '@/components/ViewDocumentsSheet';
+import ContactAssigneeSheet from '@/components/ContactAssigneeSheet';
 
 interface TimelineTrackerProps {
   selectedPlant: string;
@@ -253,18 +256,39 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant, highli
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold mb-4">Actions</h3>
                 <div className="flex gap-4">
-                  <Button variant="outline">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    Schedule Meeting
-                  </Button>
-                  <Button variant="outline">
-                    <FileText className="w-4 h-4 mr-2" />
-                    View Documents
-                  </Button>
-                  <Button variant="outline">
-                    <User className="w-4 h-4 mr-2" />
-                    Contact Assignee
-                  </Button>
+                  <ScheduleMeetingSheet
+                    assignee={selectedStage.assignee}
+                    partId={selectedStage.partId}
+                    partName={selectedStage.partName}
+                    stage={selectedStage.stage}
+                  >
+                    <Button variant="outline">
+                      <Calendar className="w-4 h-4 mr-2" />
+                      Schedule Meeting
+                    </Button>
+                  </ScheduleMeetingSheet>
+
+                  <ViewDocumentsSheet
+                    partId={selectedStage.partId}
+                    partName={selectedStage.partName}
+                    stage={selectedStage.stage}
+                  >
+                    <Button variant="outline">
+                      <FileText className="w-4 h-4 mr-2" />
+                      View Documents
+                    </Button>
+                  </ViewDocumentsSheet>
+
+                  <ContactAssigneeSheet
+                    assignee={selectedStage.assignee}
+                    partName={selectedStage.partName}
+                    stage={selectedStage.stage}
+                  >
+                    <Button variant="outline">
+                      <User className="w-4 h-4 mr-2" />
+                      Contact Assignee
+                    </Button>
+                  </ContactAssigneeSheet>
                 </div>
               </CardContent>
             </Card>

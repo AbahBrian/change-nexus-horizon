@@ -28,7 +28,7 @@ export interface Activity {
   description?: string;
   details?: string;
   part_id?: string;
-  department: string;
+  department: 'Engineering Department' | 'Quality Department' | 'Manufacturing' | 'Cost Control' | 'Part Engineering' | 'Purchasing';
   assignee: string;
   location?: string;
   priority: 'Low' | 'Medium' | 'High' | 'Critical';
@@ -44,7 +44,7 @@ export interface Task {
   description?: string;
   part_id?: string;
   assignee: string;
-  department?: string;
+  department?: 'Engineering Department' | 'Quality Department' | 'Manufacturing' | 'Cost Control' | 'Part Engineering' | 'Purchasing';
   priority: 'Low' | 'Medium' | 'High' | 'Critical';
   status: 'pending' | 'in_progress' | 'completed' | 'overdue';
   due_date?: string;
@@ -61,6 +61,42 @@ export interface KPIMetric {
   plant_id?: string;
   recorded_at: string;
   created_at: string;
+}
+
+export interface Meeting {
+  id: string;
+  title: string;
+  description?: string;
+  part_id?: string;
+  assignee: string;
+  scheduled_date: string;
+  location?: string;
+  status: 'scheduled' | 'completed' | 'cancelled';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Document {
+  id: string;
+  title: string;
+  description?: string;
+  file_url?: string;
+  part_id?: string;
+  document_type: string;
+  uploaded_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Contact {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  department?: string;
+  role?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 // Plants operations
@@ -128,7 +164,7 @@ export const getActivities = async (plantId?: string): Promise<Activity[]> => {
 export const createActivity = async (activity: Omit<Activity, 'id' | 'created_at' | 'updated_at'>): Promise<Activity> => {
   const { data, error } = await supabase
     .from('activities')
-    .insert([activity])
+    .insert(activity)
     .select()
     .single();
   
@@ -174,7 +210,7 @@ export const updateTaskStatus = async (id: string, status: Task['status']): Prom
 export const createTask = async (task: Omit<Task, 'id' | 'created_at' | 'updated_at'>): Promise<Task> => {
   const { data, error } = await supabase
     .from('tasks')
-    .insert([task])
+    .insert(task)
     .select()
     .single();
   
@@ -206,6 +242,104 @@ export const updateKPIMetric = async (metricName: string, value: number, plantId
       plant_id: plantId,
       recorded_at: new Date().toISOString()
     }])
+    .select()
+    .single();
+  
+  if (error) throw error;
+  return data;
+};
+
+// Meeting operations
+export const createMeeting = async (meeting: {
+  title: string;
+  description?: string;
+  part_id?: string;
+  assignee: string;
+  scheduled_date: string;
+  location?: string;
+}): Promise<Meeting> => {
+  const { data, error } = await supabase
+    .from('meetings')
+    .insert({
+      ...meeting,
+      status: 'scheduled'
+    })
+    .select()
+    .single();
+  
+  if (error) throw error;
+  return data;
+};
+
+export const getMeetings = async (partId?: string): Promise<Meeting[]> => {
+  let query = supabase.from('meetings').select('*');
+  
+  if (partId) {
+    query = query.eq('part_id', partId);
+  }
+  
+  const { data, error } = await query.order('scheduled_date', { ascending: true });
+  
+  if (error) throw error;
+  return data || [];
+};
+
+// Document operations
+export const createDocument = async (document: {
+  title: string;
+  description?: string;
+  file_url?: string;
+  part_id?: string;
+  document_type: string;
+  uploaded_by: string;
+}): Promise<Document> => {
+  const { data, error } = await supabase
+    .from('documents')
+    .insert(document)
+    .select()
+    .single();
+  
+  if (error) throw error;
+  return data;
+};
+
+export const getDocuments = async (partId?: string): Promise<Document[]> => {
+  let query = supabase.from('documents').select('*');
+  
+  if (partId) {
+    query = query.eq('part_id', partId);
+  }
+  
+  const { data, error } = await query.order('created_at', { ascending: false });
+  
+  if (error) throw error;
+  return data || [];
+};
+
+// Contact operations
+export const getContacts = async (name?: string): Promise<Contact[]> => {
+  let query = supabase.from('contacts').select('*');
+  
+  if (name) {
+    query = query.ilike('name', `%${name}%`);
+  }
+  
+  const { data, error } = await query.order('name');
+  
+  if (error) throw error;
+  return data || [];
+};
+
+export const createContact = async (contact: {
+  name: string;
+  email: string;
+  phone?: string;
+  department?: string;
+  role?: string;
+}): Promise<Contact> => {
+  const { data, error } = await supabase
+    .from('contacts')
+    .insert(contact)
     .select()
     .single();
   
