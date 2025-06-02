@@ -9,7 +9,224 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      activities: {
+        Row: {
+          activity_id: string
+          assignee: string
+          created_at: string | null
+          department: Database["public"]["Enums"]["department_type"]
+          description: string | null
+          details: string | null
+          id: string
+          location: string | null
+          part_id: string | null
+          priority: Database["public"]["Enums"]["priority_level"] | null
+          status: Database["public"]["Enums"]["change_status"] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          activity_id: string
+          assignee: string
+          created_at?: string | null
+          department: Database["public"]["Enums"]["department_type"]
+          description?: string | null
+          details?: string | null
+          id?: string
+          location?: string | null
+          part_id?: string | null
+          priority?: Database["public"]["Enums"]["priority_level"] | null
+          status?: Database["public"]["Enums"]["change_status"] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          activity_id?: string
+          assignee?: string
+          created_at?: string | null
+          department?: Database["public"]["Enums"]["department_type"]
+          description?: string | null
+          details?: string | null
+          id?: string
+          location?: string | null
+          part_id?: string | null
+          priority?: Database["public"]["Enums"]["priority_level"] | null
+          status?: Database["public"]["Enums"]["change_status"] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activities_part_id_fkey"
+            columns: ["part_id"]
+            isOneToOne: false
+            referencedRelation: "parts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kpi_metrics: {
+        Row: {
+          created_at: string | null
+          id: string
+          metric_name: string
+          metric_unit: string | null
+          metric_value: number | null
+          plant_id: string | null
+          recorded_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          metric_name: string
+          metric_unit?: string | null
+          metric_value?: number | null
+          plant_id?: string | null
+          recorded_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          metric_name?: string
+          metric_unit?: string | null
+          metric_value?: number | null
+          plant_id?: string | null
+          recorded_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kpi_metrics_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parts: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          part_id: string
+          plant_id: string | null
+          priority: Database["public"]["Enums"]["priority_level"] | null
+          status: Database["public"]["Enums"]["change_status"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          part_id: string
+          plant_id?: string | null
+          priority?: Database["public"]["Enums"]["priority_level"] | null
+          status?: Database["public"]["Enums"]["change_status"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          part_id?: string
+          plant_id?: string | null
+          priority?: Database["public"]["Enums"]["priority_level"] | null
+          status?: Database["public"]["Enums"]["change_status"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parts_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plants: {
+        Row: {
+          created_at: string | null
+          id: string
+          location: string | null
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          location?: string | null
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          location?: string | null
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      tasks: {
+        Row: {
+          assignee: string
+          completed_at: string | null
+          created_at: string | null
+          department: Database["public"]["Enums"]["department_type"] | null
+          description: string | null
+          due_date: string | null
+          id: string
+          part_id: string | null
+          priority: Database["public"]["Enums"]["priority_level"] | null
+          status: Database["public"]["Enums"]["task_status"] | null
+          task_id: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          assignee: string
+          completed_at?: string | null
+          created_at?: string | null
+          department?: Database["public"]["Enums"]["department_type"] | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          part_id?: string | null
+          priority?: Database["public"]["Enums"]["priority_level"] | null
+          status?: Database["public"]["Enums"]["task_status"] | null
+          task_id: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          assignee?: string
+          completed_at?: string | null
+          created_at?: string | null
+          department?: Database["public"]["Enums"]["department_type"] | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          part_id?: string | null
+          priority?: Database["public"]["Enums"]["priority_level"] | null
+          status?: Database["public"]["Enums"]["task_status"] | null
+          task_id?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_part_id_fkey"
+            columns: ["part_id"]
+            isOneToOne: false
+            referencedRelation: "parts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +235,22 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      change_status:
+        | "initiated"
+        | "pending"
+        | "approved"
+        | "completed"
+        | "rejected"
+        | "on_hold"
+      department_type:
+        | "Engineering Department"
+        | "Quality Department"
+        | "Manufacturing"
+        | "Cost Control"
+        | "Part Engineering"
+        | "Purchasing"
+      priority_level: "Low" | "Medium" | "High" | "Critical"
+      task_status: "pending" | "in_progress" | "completed" | "overdue"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +365,25 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      change_status: [
+        "initiated",
+        "pending",
+        "approved",
+        "completed",
+        "rejected",
+        "on_hold",
+      ],
+      department_type: [
+        "Engineering Department",
+        "Quality Department",
+        "Manufacturing",
+        "Cost Control",
+        "Part Engineering",
+        "Purchasing",
+      ],
+      priority_level: ["Low", "Medium", "High", "Critical"],
+      task_status: ["pending", "in_progress", "completed", "overdue"],
+    },
   },
 } as const
