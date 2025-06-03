@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Activity, Clock, TrendingUp, Users, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Activity, Clock, TrendingUp, Users, AlertTriangle, CheckCircle, Plus } from 'lucide-react';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import TimelineTracker from '@/components/TimelineTracker';
 import TaskDashboard from '@/components/TaskDashboard';
@@ -55,23 +55,29 @@ const Dashboard = () => {
 
   const renderOverview = () => (
     <div className="space-y-6">
-      {/* Plant Selector */}
+      {/* Header with Plant Selector and User Input Button */}
       <Card className="bg-white shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Plant Selection</span>
-            <Select value={selectedPlant} onValueChange={handlePlantChange}>
-              <SelectTrigger className="w-64">
-                <SelectValue placeholder="Select a plant" />
-              </SelectTrigger>
-              <SelectContent>
-                {plants.map((plant) => (
-                  <SelectItem key={plant.id} value={plant.name}>
-                    {plant.name} - {plant.location}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex items-center gap-4">
+              <Select value={selectedPlant} onValueChange={handlePlantChange}>
+                <SelectTrigger className="w-64">
+                  <SelectValue placeholder="Select a plant" />
+                </SelectTrigger>
+                <SelectContent>
+                  {plants.map((plant) => (
+                    <SelectItem key={plant.id} value={plant.name}>
+                      {plant.name} - {plant.location}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                <Plus className="w-4 h-4 mr-2" />
+                User Input
+              </Button>
+            </div>
           </CardTitle>
         </CardHeader>
       </Card>
