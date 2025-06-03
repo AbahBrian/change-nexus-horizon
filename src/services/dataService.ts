@@ -31,6 +31,8 @@ export interface Activity {
   location: string;
   status: string;
   department: string;
+  details?: string;
+  part_id?: string;
 }
 
 export interface Task {
@@ -44,6 +46,8 @@ export interface Task {
   due_date: string;
   status: string;
   department: string;
+  part_id?: string;
+  completed_at?: string;
 }
 
 export interface KPIMetric {
@@ -52,8 +56,8 @@ export interface KPIMetric {
   plant_id: string;
   metric_name: string;
   metric_value: number;
-  target_value: number;
-  trend: string;
+  metric_unit?: string;
+  recorded_at?: string;
 }
 
 export interface Meeting {
@@ -62,7 +66,10 @@ export interface Meeting {
   title: string;
   description: string;
   scheduled_date: string;
-  attendees: string[];
+  assignee: string;
+  part_id?: string;
+  location?: string;
+  status?: string;
 }
 
 export interface Document {
@@ -71,9 +78,9 @@ export interface Document {
   title: string;
   description: string;
   file_url: string;
-  category: string;
   document_type: string;
   uploaded_by: string;
+  part_id?: string;
 }
 
 export interface Contact {

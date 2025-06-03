@@ -7,25 +7,47 @@ import { Clock, CheckCircle, AlertTriangle, Play, Pause, Activity, ArrowLeft, Us
 import ScheduleMeetingSheet from '@/components/ScheduleMeetingSheet';
 import ViewDocumentsSheet from '@/components/ViewDocumentsSheet';
 import ContactAssigneeSheet from '@/components/ContactAssigneeSheet';
+import { useSupabaseData } from '@/hooks/useSupabaseData';
 
 interface TimelineTrackerProps {
   selectedPlant: string;
   highlightPartId?: string | null;
 }
 
+interface TimelineStage {
+  stage: string;
+  department: string;
+  status: 'completed' | 'active' | 'delayed' | 'pending';
+  timestamp: string | null;
+  assignee: string;
+  notes: string;
+  estimatedDuration: string;
+}
+
+interface PartChange {
+  id: string;
+  partName: string;
+  initiatedBy: string;
+  priority: string;
+  status: string;
+  currentStage: string;
+  progress: number;
+  timeline: TimelineStage[];
+}
+
 const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant, highlightPartId }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedStage, setSelectedStage] = useState<any>(null);
+  
+  const { plants, parts, activities, isLoading } = useSupabaseData(selectedPlant);
 
   // Clear highlighted part when component unmounts or highlightPartId changes
   useEffect(() => {
     if (highlightPartId) {
-      // Clear any existing search/filters to show the highlighted part
       setSearchTerm('');
       setFilterStatus('all');
       
-      // Scroll to the highlighted part after a short delay
       setTimeout(() => {
         const element = document.getElementById(`part-${highlightPartId}`);
         if (element) {
@@ -35,18 +57,13 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant, highli
     }
   }, [highlightPartId]);
 
-  const partChanges = [
-    {
-      id: 'PCB-2024-A',
-      partName: 'Circuit Board Module',
-      initiatedBy: 'Engineering',
-      priority: 'High',
-      status: 'In Progress',
-      currentStage: 'Drawing Part',
-      progress: 13,
-      timeline: [
-        { stage: 'TEN PART FROM SEC', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-15 09:00', assignee: 'John Smith', notes: 'Initial part request submitted and approved', estimatedDuration: '2 hours' },
-        { stage: 'Drawing Part', department: 'PART ENGINEERING', status: 'active', timestamp: '2024-01-15 14:30', assignee: 'Sarah Johnson', notes: 'Technical drawings in progress', estimatedDuration: '8 hours' },
+  // Convert database parts to timeline format
+  const partChanges: PartChange[] = useMemo(() => {
+    return parts.map((part) => {
+      // Define the 11-step workflow
+      const timelineStages: TimelineStage[] = [
+        { stage: 'TEN PART FROM SEC', department: 'PART ENGINEERING', status: 'completed', timestamp: part.created_at, assignee: 'John Smith', notes: 'Initial part request submitted and approved', estimatedDuration: '2 hours' },
+        { stage: 'Drawing Part', department: 'PART ENGINEERING', status: part.status === 'initiated' ? 'active' : 'completed', timestamp: null, assignee: 'Sarah Johnson', notes: 'Technical drawings in progress', estimatedDuration: '8 hours' },
         { stage: 'TEN Part List', department: 'PRODUCT ENGINEERING', status: 'pending', timestamp: null, assignee: 'Mike Davis', notes: 'Waiting for drawing completion', estimatedDuration: '4 hours' },
         { stage: 'Price Part', department: 'COST CONTROL', status: 'pending', timestamp: null, assignee: 'Lisa Chen', notes: 'Cost analysis pending', estimatedDuration: '6 hours' },
         { stage: 'ROHS', department: 'PART ENGINEERING', status: 'pending', timestamp: null, assignee: 'Tom Wilson', notes: 'Environmental compliance check', estimatedDuration: '3 hours' },
@@ -56,92 +73,69 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant, highli
         { stage: 'EVALUATION REPORT', department: 'PRODUCT ENGINEERING', status: 'pending', timestamp: null, assignee: 'Emily White', notes: 'Quality evaluation report', estimatedDuration: '6 hours' },
         { stage: 'LINE TRIAL INFORMATION SHEET', department: 'PART ENGINEERING', status: 'pending', timestamp: null, assignee: 'David Kim', notes: 'Production line trial documentation', estimatedDuration: '3 hours' },
         { stage: 'PART APPROVAL CONFIRMATION', department: 'PART ENGINEERING', status: 'pending', timestamp: null, assignee: 'Jennifer Taylor', notes: 'Final approval and sign-off', estimatedDuration: '2 hours' }
-      ]
-    },
-    {
-      id: 'MET-2024-15',
-      partName: 'Metal Housing Component',
-      initiatedBy: 'Materials',
-      priority: 'Medium',
-      status: 'In Progress',
-      currentStage: 'Price Part',
-      progress: 27,
-      timeline: [
-        { stage: 'TEN PART FROM SEC', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-14 08:00', assignee: 'John Smith', notes: 'Part request approved quickly', estimatedDuration: '2 hours' },
-        { stage: 'Drawing Part', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-14 15:00', assignee: 'Sarah Johnson', notes: 'CAD drawings completed', estimatedDuration: '8 hours' },
-        { stage: 'TEN Part List', department: 'PRODUCT ENGINEERING', status: 'completed', timestamp: '2024-01-15 09:30', assignee: 'Mike Davis', notes: 'Part list generated successfully', estimatedDuration: '4 hours' },
-        { stage: 'Price Part', department: 'COST CONTROL', status: 'active', timestamp: '2024-01-16 10:00', assignee: 'Lisa Chen', notes: 'Cost analysis in progress', estimatedDuration: '6 hours' },
-        { stage: 'ROHS', department: 'PART ENGINEERING', status: 'pending', timestamp: null, assignee: 'Tom Wilson', notes: 'Awaiting cost approval', estimatedDuration: '3 hours' },
-        { stage: 'PO', department: 'PURCHASING', status: 'pending', timestamp: null, assignee: 'Anna Brown', notes: 'Purchase order ready', estimatedDuration: '2 hours' },
-        { stage: 'BOM', department: 'GNS+ SYSTEM', status: 'pending', timestamp: null, assignee: 'System Auto', notes: 'System processing', estimatedDuration: '1 hour' },
-        { stage: 'PART DIMENSION MEASUREMENT', department: 'PART ENGINEERING', status: 'pending', timestamp: null, assignee: 'Robert Lee', notes: 'Measurement protocols ready', estimatedDuration: '4 hours' },
-        { stage: 'EVALUATION REPORT', department: 'PRODUCT ENGINEERING', status: 'pending', timestamp: null, assignee: 'Emily White', notes: 'Evaluation criteria defined', estimatedDuration: '6 hours' },
-        { stage: 'LINE TRIAL INFORMATION SHEET', department: 'PART ENGINEERING', status: 'pending', timestamp: null, assignee: 'David Kim', notes: 'Trial setup prepared', estimatedDuration: '3 hours' },
-        { stage: 'PART APPROVAL CONFIRMATION', department: 'PART ENGINEERING', status: 'pending', timestamp: null, assignee: 'Jennifer Taylor', notes: 'Approval workflow ready', estimatedDuration: '2 hours' }
-      ]
-    },
-    {
-      id: 'MAC-2024-08',
-      partName: 'Machinery Component',
-      initiatedBy: 'Manufacturing',
-      priority: 'Critical',
-      status: 'Delayed',
-      currentStage: 'TEN PART FROM SEC',
-      progress: 9,
-      timeline: [
-        { stage: 'TEN PART FROM SEC', department: 'PART ENGINEERING', status: 'delayed', timestamp: '2024-01-13 10:00', assignee: 'John Smith', notes: 'Delayed due to specification issues', estimatedDuration: '2 hours' },
-        { stage: 'Drawing Part', department: 'PART ENGINEERING', status: 'pending', timestamp: null, assignee: 'Sarah Johnson', notes: 'Waiting for specification clarification', estimatedDuration: '8 hours' },
-        { stage: 'TEN Part List', department: 'PRODUCT ENGINEERING', status: 'pending', timestamp: null, assignee: 'Mike Davis', notes: 'On hold', estimatedDuration: '4 hours' },
-        { stage: 'Price Part', department: 'COST CONTROL', status: 'pending', timestamp: null, assignee: 'Lisa Chen', notes: 'Cost estimation blocked', estimatedDuration: '6 hours' },
-        { stage: 'ROHS', department: 'PART ENGINEERING', status: 'pending', timestamp: null, assignee: 'Tom Wilson', notes: 'Compliance check queued', estimatedDuration: '3 hours' },
-        { stage: 'PO', department: 'PURCHASING', status: 'pending', timestamp: null, assignee: 'Anna Brown', notes: 'Purchase order waiting', estimatedDuration: '2 hours' },
-        { stage: 'BOM', department: 'GNS+ SYSTEM', status: 'pending', timestamp: null, assignee: 'System Auto', notes: 'System on standby', estimatedDuration: '1 hour' },
-        { stage: 'PART DIMENSION MEASUREMENT', department: 'PART ENGINEERING', status: 'pending', timestamp: null, assignee: 'Robert Lee', notes: 'Measurement planning pending', estimatedDuration: '4 hours' },
-        { stage: 'EVALUATION REPORT', department: 'PRODUCT ENGINEERING', status: 'pending', timestamp: null, assignee: 'Emily White', notes: 'Evaluation on hold', estimatedDuration: '6 hours' },
-        { stage: 'LINE TRIAL INFORMATION SHEET', department: 'PART ENGINEERING', status: 'pending', timestamp: null, assignee: 'David Kim', notes: 'Trial planning delayed', estimatedDuration: '3 hours' },
-        { stage: 'PART APPROVAL CONFIRMATION', department: 'PART ENGINEERING', status: 'pending', timestamp: null, assignee: 'Jennifer Taylor', notes: 'Approval process queued', estimatedDuration: '2 hours' }
-      ]
-    },
-    {
-      id: 'ELC-2024-22',
-      partName: 'Electronic Control Unit',
-      initiatedBy: 'Engineering',
-      priority: 'High',
-      status: 'Completed',
-      currentStage: 'PART APPROVAL CONFIRMATION',
-      progress: 100,
-      timeline: [
-        { stage: 'TEN PART FROM SEC', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-16 08:30', assignee: 'John Smith', notes: 'Request processed efficiently', estimatedDuration: '2 hours' },
-        { stage: 'Drawing Part', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-16 16:00', assignee: 'Sarah Johnson', notes: 'Detailed CAD models created', estimatedDuration: '8 hours' },
-        { stage: 'TEN Part List', department: 'PRODUCT ENGINEERING', status: 'completed', timestamp: '2024-01-17 10:00', assignee: 'Mike Davis', notes: 'Comprehensive part list finalized', estimatedDuration: '4 hours' },
-        { stage: 'Price Part', department: 'COST CONTROL', status: 'completed', timestamp: '2024-01-17 14:30', assignee: 'Lisa Chen', notes: 'Cost analysis completed under budget', estimatedDuration: '6 hours' },
-        { stage: 'ROHS', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-18 09:00', assignee: 'Tom Wilson', notes: 'Environmental compliance verified', estimatedDuration: '3 hours' },
-        { stage: 'PO', department: 'PURCHASING', status: 'completed', timestamp: '2024-01-18 15:30', assignee: 'Anna Brown', notes: 'Purchase order approved and sent', estimatedDuration: '2 hours' },
-        { stage: 'BOM', department: 'GNS+ SYSTEM', status: 'completed', timestamp: '2024-01-19 11:00', assignee: 'System Auto', notes: 'BOM generated automatically', estimatedDuration: '1 hour' },
-        { stage: 'PART DIMENSION MEASUREMENT', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-19 16:30', assignee: 'Robert Lee', notes: 'All measurements within tolerance', estimatedDuration: '4 hours' },
-        { stage: 'EVALUATION REPORT', department: 'PRODUCT ENGINEERING', status: 'completed', timestamp: '2024-01-20 10:30', assignee: 'Emily White', notes: 'Quality evaluation passed', estimatedDuration: '6 hours' },
-        { stage: 'LINE TRIAL INFORMATION SHEET', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-20 14:00', assignee: 'David Kim', notes: 'Trial documentation complete', estimatedDuration: '3 hours' },
-        { stage: 'PART APPROVAL CONFIRMATION', department: 'PART ENGINEERING', status: 'completed', timestamp: '2024-01-21 09:30', assignee: 'Jennifer Taylor', notes: 'Final approval confirmed', estimatedDuration: '2 hours' }
-      ]
-    }
-  ];
+      ];
+
+      // Calculate progress and current stage based on status
+      let progress = 9; // Default to first stage
+      let currentStage = 'TEN PART FROM SEC';
+      
+      switch (part.status) {
+        case 'initiated':
+          progress = 13;
+          currentStage = 'Drawing Part';
+          timelineStages[1].status = 'active';
+          break;
+        case 'pending':
+          progress = 27;
+          currentStage = 'Price Part';
+          timelineStages[1].status = 'completed';
+          timelineStages[2].status = 'completed';
+          timelineStages[3].status = 'active';
+          break;
+        case 'approved':
+          progress = 100;
+          currentStage = 'PART APPROVAL CONFIRMATION';
+          timelineStages.forEach((stage, index) => {
+            if (index < timelineStages.length) {
+              stage.status = 'completed';
+              stage.timestamp = new Date().toISOString();
+            }
+          });
+          break;
+        case 'rejected':
+          progress = 9;
+          currentStage = 'TEN PART FROM SEC';
+          timelineStages[0].status = 'delayed';
+          break;
+      }
+
+      return {
+        id: part.part_id,
+        partName: part.name,
+        initiatedBy: 'Engineering',
+        priority: part.priority,
+        status: part.status === 'approved' ? 'Completed' : part.status === 'rejected' ? 'Delayed' : 'In Progress',
+        currentStage,
+        progress,
+        timeline: timelineStages
+      };
+    });
+  }, [parts]);
 
   // Real-time filtering using useMemo for performance
   const filteredChanges = useMemo(() => {
     return partChanges.filter(change => {
-      // Search by part name or ID (case insensitive)
       const searchLower = searchTerm.toLowerCase();
       const matchesSearch = searchTerm === '' || 
         change.partName.toLowerCase().includes(searchLower) ||
         change.id.toLowerCase().includes(searchLower);
       
-      // Filter by status
       const matchesStatus = filterStatus === 'all' || 
         change.status.toLowerCase() === filterStatus.toLowerCase();
       
       return matchesSearch && matchesStatus;
     });
-  }, [searchTerm, filterStatus]);
+  }, [partChanges, searchTerm, filterStatus]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -173,6 +167,18 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant, highli
     setSearchTerm('');
     setFilterStatus('all');
   };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <Card className="bg-white shadow-sm">
+          <CardContent className="p-6">
+            <div className="text-center">Loading tracker data...</div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (selectedStage) {
     return (
@@ -319,7 +325,6 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant, highli
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Search Input */}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input
@@ -330,7 +335,6 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant, highli
                 />
               </div>
 
-              {/* Status Filter */}
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
@@ -342,7 +346,6 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant, highli
                 <option value="delayed">Delayed</option>
               </select>
 
-              {/* Clear Filters */}
               <Button 
                 variant="outline" 
                 onClick={clearFilters}
@@ -352,7 +355,6 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant, highli
               </Button>
             </div>
 
-            {/* Results Counter */}
             <div className="flex items-center justify-between text-sm text-slate-600">
               <span>
                 Showing {filteredChanges.length} of {partChanges.length} parts
@@ -372,7 +374,10 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant, highli
                 <Search className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-slate-600 mb-2">No parts found</h3>
                 <p className="text-slate-500 mb-4">
-                  No parts match your current search criteria. Try adjusting your filters.
+                  {partChanges.length === 0 
+                    ? `No parts have been created for ${selectedPlant} yet. Use the User Input form to create new parts.`
+                    : "No parts match your current search criteria. Try adjusting your filters."
+                  }
                 </p>
                 <Button variant="outline" onClick={clearFilters}>
                   Clear all filters
@@ -424,7 +429,7 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant, highli
                             <p className="text-xs font-medium text-slate-800 leading-tight mb-1">{stage.stage}</p>
                             <p className="text-xs text-blue-600 font-medium">{stage.department}</p>
                             {stage.timestamp && (
-                              <p className="text-xs text-slate-500 mt-1">{stage.timestamp}</p>
+                              <p className="text-xs text-slate-500 mt-1">{new Date(stage.timestamp).toLocaleDateString()}</p>
                             )}
                           </div>
                           <div className={`absolute top-2 right-2 w-4 h-4 ${getStatusColor(stage.status)} rounded-full flex items-center justify-center`}>
