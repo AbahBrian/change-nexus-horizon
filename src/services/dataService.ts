@@ -1,4 +1,5 @@
-import { supabase } from '@/supabaseClient';
+
+import { supabase } from '@/integrations/supabase/client';
 
 // Define types for your data
 export interface Plant {
@@ -29,6 +30,7 @@ export interface Activity {
   assignee: string;
   location: string;
   status: string;
+  department: string;
 }
 
 export interface Task {
@@ -41,6 +43,7 @@ export interface Task {
   assignee: string;
   due_date: string;
   status: string;
+  department: string;
 }
 
 export interface KPIMetric {
@@ -69,6 +72,8 @@ export interface Document {
   description: string;
   file_url: string;
   category: string;
+  document_type: string;
+  uploaded_by: string;
 }
 
 export interface Contact {
@@ -78,6 +83,7 @@ export interface Contact {
   email: string;
   phone: string;
   role: string;
+  department: string;
 }
 
 // Plants
@@ -167,7 +173,7 @@ export const getActivities = async (plantId: string | undefined): Promise<Activi
   const { data, error } = await supabase
     .from('activities')
     .select('*')
-    .eq('plant_id', plantId)
+    .eq('part_id', plantId)
     .order('created_at', { ascending: false });
 
   if (error) {
