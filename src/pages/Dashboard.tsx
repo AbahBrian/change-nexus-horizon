@@ -1,5 +1,5 @@
-
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import NavigationSidebar from '@/components/NavigationSidebar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,7 @@ import MyTaskPage from '@/components/MyTaskPage';
 import KPIDashboard from '@/components/KPIDashboard';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedPlant, setSelectedPlant] = useState('Plant A');
   
@@ -22,6 +23,10 @@ const Dashboard = () => {
 
   const handlePlantChange = (plantName: string) => {
     setSelectedPlant(plantName);
+  };
+
+  const handleUserInputClick = () => {
+    navigate('/user-input');
   };
 
   const getStatusColor = (status: string) => {
@@ -73,7 +78,10 @@ const Dashboard = () => {
                   ))}
                 </SelectContent>
               </Select>
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+              <Button 
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                onClick={handleUserInputClick}
+              >
                 <Plus className="w-4 h-4 mr-2" />
                 User Input
               </Button>

@@ -1,361 +1,371 @@
+import { supabase } from '@/supabaseClient';
 
-import { supabase } from '@/integrations/supabase/client';
-
+// Define types for your data
 export interface Plant {
   id: string;
-  name: string;
-  location?: string;
   created_at: string;
-  updated_at: string;
+  name: string;
+  location: string;
 }
 
 export interface Part {
   id: string;
+  created_at: string;
   part_id: string;
   name: string;
-  description?: string;
-  plant_id?: string;
-  status: 'initiated' | 'pending' | 'approved' | 'completed' | 'rejected' | 'on_hold';
-  priority: 'Low' | 'Medium' | 'High' | 'Critical';
-  created_at: string;
-  updated_at: string;
+  description: string;
+  priority: string;
+  plant_id: string;
+  status: string;
 }
 
 export interface Activity {
   id: string;
+  created_at: string;
   activity_id: string;
   title: string;
-  description?: string;
-  details?: string;
-  part_id?: string;
-  department: 'Engineering Department' | 'Quality Department' | 'Manufacturing' | 'Cost Control' | 'Part Engineering' | 'Purchasing';
+  description: string;
+  priority: string;
   assignee: string;
-  location?: string;
-  priority: 'Low' | 'Medium' | 'High' | 'Critical';
-  status: 'initiated' | 'pending' | 'approved' | 'completed' | 'rejected' | 'on_hold';
-  created_at: string;
-  updated_at: string;
+  location: string;
+  status: string;
 }
 
 export interface Task {
   id: string;
+  created_at: string;
   task_id: string;
   title: string;
-  description?: string;
-  part_id?: string;
+  description: string;
+  priority: string;
   assignee: string;
-  department?: 'Engineering Department' | 'Quality Department' | 'Manufacturing' | 'Cost Control' | 'Part Engineering' | 'Purchasing';
-  priority: 'Low' | 'Medium' | 'High' | 'Critical';
-  status: 'pending' | 'in_progress' | 'completed' | 'overdue';
-  due_date?: string;
-  completed_at?: string;
-  created_at: string;
-  updated_at: string;
+  due_date: string;
+  status: string;
 }
 
 export interface KPIMetric {
   id: string;
-  metric_name: string;
-  metric_value?: number;
-  metric_unit?: string;
-  plant_id?: string;
-  recorded_at: string;
   created_at: string;
+  plant_id: string;
+  metric_name: string;
+  metric_value: number;
+  target_value: number;
+  trend: string;
 }
 
 export interface Meeting {
   id: string;
-  title: string;
-  description?: string;
-  part_id?: string;
-  assignee: string;
-  scheduled_date: string;
-  location?: string;
-  status: 'scheduled' | 'completed' | 'cancelled';
   created_at: string;
-  updated_at: string;
+  title: string;
+  description: string;
+  scheduled_date: string;
+  attendees: string[];
 }
 
 export interface Document {
   id: string;
-  title: string;
-  description?: string;
-  file_url?: string;
-  part_id?: string;
-  document_type: string;
-  uploaded_by: string;
   created_at: string;
-  updated_at: string;
+  title: string;
+  description: string;
+  file_url: string;
+  category: string;
 }
 
 export interface Contact {
   id: string;
+  created_at: string;
   name: string;
   email: string;
-  phone?: string;
-  department?: string;
-  role?: string;
-  created_at: string;
-  updated_at: string;
+  phone: string;
+  role: string;
 }
 
-// Plants operations
+// Plants
 export const getPlants = async (): Promise<Plant[]> => {
+  console.log('Fetching plants...');
+  
   const { data, error } = await supabase
     .from('plants')
     .select('*')
-    .order('name');
-  
-  if (error) throw error;
-  return data || [];
-};
+    .order('name', { ascending: true });
 
-// Parts operations
-export const getParts = async (plantId?: string): Promise<Part[]> => {
-  let query = supabase.from('parts').select('*');
-  
-  if (plantId) {
-    query = query.eq('plant_id', plantId);
+  if (error) {
+    console.error('Error fetching plants:', error);
+    return [];
   }
-  
-  const { data, error } = await query.order('created_at', { ascending: false });
-  
-  if (error) throw error;
+
   return data || [];
 };
 
-export const createPart = async (part: Omit<Part, 'id' | 'created_at' | 'updated_at'>): Promise<Part> => {
+// Parts
+export const getParts = async (plantId: string | undefined): Promise<Part[]> => {
+  if (!plantId) {
+    console.warn('Plant ID is undefined, skipping parts fetch.');
+    return [];
+  }
+
+  console.log(`Fetching parts for plant ID: ${plantId}`);
+
   const { data, error } = await supabase
     .from('parts')
-    .insert([part])
+    .select('*')
+    .eq('plant_id', plantId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error(`Error fetching parts for plant ID ${plantId}:`, error);
+    return [];
+  }
+
+  return data || [];
+};
+
+export const createPart = async (partData: any) => {
+  console.log('Creating part:', partData);
+  
+  const { data, error } = await supabase
+    .from('parts')
+    .insert([partData])
     .select()
     .single();
-  
-  if (error) throw error;
+
+  if (error) {
+    console.error('Error creating part:', error);
+    throw error;
+  }
+
   return data;
 };
 
-export const updatePartStatus = async (id: string, status: Part['status']): Promise<Part> => {
+export const updatePartStatus = async (partId: string, status: string) => {
+  console.log(`Updating part ${partId} status to: ${status}`);
+
   const { data, error } = await supabase
     .from('parts')
-    .update({ status, updated_at: new Date().toISOString() })
-    .eq('id', id)
+    .update({ status })
+    .eq('id', partId)
     .select()
     .single();
-  
-  if (error) throw error;
+
+  if (error) {
+    console.error(`Error updating part ${partId} status:`, error);
+    throw error;
+  }
+
   return data;
 };
 
-// Activities operations
-export const getActivities = async (plantId?: string): Promise<Activity[]> => {
-  // For now, get all activities since plant_id doesn't exist in activities table
+// Activities
+export const getActivities = async (plantId: string | undefined): Promise<Activity[]> => {
+  if (!plantId) {
+    console.warn('Plant ID is undefined, skipping activities fetch.');
+    return [];
+  }
+
+  console.log(`Fetching activities for plant ID: ${plantId}`);
+
   const { data, error } = await supabase
     .from('activities')
     .select('*')
+    .eq('plant_id', plantId)
     .order('created_at', { ascending: false });
-  
-  if (error) throw error;
+
+  if (error) {
+    console.error(`Error fetching activities for plant ID ${plantId}:`, error);
+    return [];
+  }
+
   return data || [];
 };
 
-export const createActivity = async (activity: Omit<Activity, 'id' | 'created_at' | 'updated_at'>): Promise<Activity> => {
+export const createActivity = async (activityData: any) => {
+  console.log('Creating activity:', activityData);
+  
   const { data, error } = await supabase
     .from('activities')
-    .insert(activity)
+    .insert([activityData])
     .select()
     .single();
-  
-  if (error) throw error;
+
+  if (error) {
+    console.error('Error creating activity:', error);
+    throw error;
+  }
+
   return data;
 };
 
-// Tasks operations
-export const getTasks = async (assignee?: string): Promise<Task[]> => {
-  let query = supabase.from('tasks').select('*');
-  
-  if (assignee) {
-    query = query.eq('assignee', assignee);
+// Tasks
+export const getTasks = async (assignee: string): Promise<Task[]> => {
+  console.log(`Fetching tasks for assignee: ${assignee}`);
+
+  const { data, error } = await supabase
+    .from('tasks')
+    .select('*')
+    .eq('assignee', assignee)
+    .order('due_date', { ascending: true });
+
+  if (error) {
+    console.error(`Error fetching tasks for assignee ${assignee}:`, error);
+    return [];
   }
-  
-  const { data, error } = await query.order('due_date', { ascending: true });
-  
-  if (error) throw error;
+
   return data || [];
 };
 
-export const updateTaskStatus = async (id: string, status: Task['status']): Promise<Task> => {
-  const updateData: any = { 
-    status, 
-    updated_at: new Date().toISOString()
-  };
-  
-  if (status === 'completed') {
-    updateData.completed_at = new Date().toISOString();
-  }
+export const createTask = async (taskData: any) => {
+  console.log('Creating task:', taskData);
   
   const { data, error } = await supabase
     .from('tasks')
-    .update(updateData)
-    .eq('id', id)
+    .insert([taskData])
     .select()
     .single();
-  
-  if (error) throw error;
+
+  if (error) {
+    console.error('Error creating task:', error);
+    throw error;
+  }
+
   return data;
 };
 
-export const createTask = async (task: Omit<Task, 'id' | 'created_at' | 'updated_at'>): Promise<Task> => {
+export const updateTaskStatus = async (taskId: string, status: string) => {
+  console.log(`Updating task ${taskId} status to: ${status}`);
+
   const { data, error } = await supabase
     .from('tasks')
-    .insert(task)
+    .update({ status })
+    .eq('id', taskId)
     .select()
     .single();
-  
-  if (error) throw error;
+
+  if (error) {
+    console.error(`Error updating task ${taskId} status:`, error);
+    throw error;
+  }
+
   return data;
 };
 
-// KPI operations
-export const getKPIMetrics = async (plantId?: string): Promise<KPIMetric[]> => {
-  let query = supabase.from('kpi_metrics').select('*');
-  
-  if (plantId) {
-    query = query.eq('plant_id', plantId);
+// KPI Metrics
+export const getKPIMetrics = async (plantId: string | undefined): Promise<KPIMetric[]> => {
+  if (!plantId) {
+    console.warn('Plant ID is undefined, skipping KPI metrics fetch.');
+    return [];
   }
-  
-  const { data, error } = await query.order('recorded_at', { ascending: false });
-  
-  if (error) throw error;
-  return data || [];
-};
 
-export const updateKPIMetric = async (metricName: string, value: number, plantId: string): Promise<KPIMetric> => {
+  console.log(`Fetching KPI metrics for plant ID: ${plantId}`);
+
   const { data, error } = await supabase
     .from('kpi_metrics')
-    .upsert([{
-      metric_name: metricName,
-      metric_value: value,
-      metric_unit: 'count',
-      plant_id: plantId,
-      recorded_at: new Date().toISOString()
-    }])
-    .select()
-    .single();
-  
-  if (error) throw error;
-  return data;
-};
+    .select('*')
+    .eq('plant_id', plantId)
+    .order('metric_name', { ascending: true });
 
-// Meeting operations - using raw SQL since tables aren't in types yet
-export const createMeeting = async (meeting: {
-  title: string;
-  description?: string;
-  part_id?: string;
-  assignee: string;
-  scheduled_date: string;
-  location?: string;
-}): Promise<Meeting> => {
-  const { data, error } = await supabase.rpc('create_meeting', {
-    p_title: meeting.title,
-    p_description: meeting.description || '',
-    p_part_id: meeting.part_id,
-    p_assignee: meeting.assignee,
-    p_scheduled_date: meeting.scheduled_date,
-    p_location: meeting.location || '',
-  });
-  
   if (error) {
-    console.log('RPC failed, trying direct insert');
-    // Fallback to direct insert
-    const { data: insertData, error: insertError } = await supabase
-      .from('meetings' as any)
-      .insert({
-        ...meeting,
-        status: 'scheduled'
-      })
-      .select()
-      .single();
-    
-    if (insertError) throw insertError;
-    return insertData;
+    console.error(`Error fetching KPI metrics for plant ID ${plantId}:`, error);
+    return [];
   }
+
+  return data || [];
+};
+
+export const createMeeting = async (meetingData: any) => {
+  console.log('Creating meeting:', meetingData);
   
+  const { data, error } = await supabase
+    .from('meetings')
+    .insert([meetingData])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating meeting:', error);
+    throw error;
+  }
+
   return data;
 };
 
-export const getMeetings = async (partId?: string): Promise<Meeting[]> => {
-  let query = supabase.from('meetings' as any).select('*');
+export const getMeetings = async (): Promise<Meeting[]> => {
+  console.log('Fetching meetings...');
   
-  if (partId) {
-    query = query.eq('part_id', partId);
+  const { data, error } = await supabase
+    .from('meetings')
+    .select('*')
+    .order('scheduled_date', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching meetings:', error);
+    return [];
   }
-  
-  const { data, error } = await query.order('scheduled_date', { ascending: true });
-  
-  if (error) throw error;
+
   return data || [];
 };
 
-// Document operations
-export const createDocument = async (document: {
-  title: string;
-  description?: string;
-  file_url?: string;
-  part_id?: string;
-  document_type: string;
-  uploaded_by: string;
-}): Promise<Document> => {
+export const createDocument = async (documentData: any) => {
+  console.log('Creating document:', documentData);
+  
   const { data, error } = await supabase
-    .from('documents' as any)
-    .insert(document)
+    .from('documents')
+    .insert([documentData])
     .select()
     .single();
-  
-  if (error) throw error;
+
+  if (error) {
+    console.error('Error creating document:', error);
+    throw error;
+  }
+
   return data;
 };
 
-export const getDocuments = async (partId?: string): Promise<Document[]> => {
-  let query = supabase.from('documents' as any).select('*');
+export const getDocuments = async (): Promise<Document[]> => {
+  console.log('Fetching documents...');
   
-  if (partId) {
-    query = query.eq('part_id', partId);
-  }
-  
-  const { data, error } = await query.order('created_at', { ascending: false });
-  
-  if (error) throw error;
-  return data || [];
-};
-
-// Contact operations
-export const getContacts = async (name?: string): Promise<Contact[]> => {
-  let query = supabase.from('contacts' as any).select('*');
-  
-  if (name) {
-    query = query.ilike('name', `%${name}%`);
-  }
-  
-  const { data, error } = await query.order('name');
-  
-  if (error) throw error;
-  return data || [];
-};
-
-export const createContact = async (contact: {
-  name: string;
-  email: string;
-  phone?: string;
-  department?: string;
-  role?: string;
-}): Promise<Contact> => {
   const { data, error } = await supabase
-    .from('contacts' as any)
-    .insert(contact)
-    .select()
-    .single();
+    .from('documents')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching documents:', error);
+    return [];
+  }
+
+  return data || [];
+};
+
+export const getContacts = async (): Promise<Contact[]> => {
+  console.log('Fetching contacts...');
   
-  if (error) throw error;
+  const { data, error } = await supabase
+    .from('contacts')
+    .select('*')
+    .order('name', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching contacts:', error);
+    return [];
+  }
+
+  return data || [];
+};
+
+export const getContactById = async (id: string): Promise<Contact | null> => {
+  console.log('Fetching contact by ID:', id);
+  
+  const { data, error } = await supabase
+    .from('contacts')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Error fetching contact:', error);
+    return null;
+  }
+
   return data;
 };
