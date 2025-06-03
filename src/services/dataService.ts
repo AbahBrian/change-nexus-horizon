@@ -149,13 +149,11 @@ export const updatePartStatus = async (id: string, status: Part['status']): Prom
 
 // Activities operations
 export const getActivities = async (plantId?: string): Promise<Activity[]> => {
-  let query = supabase.from('activities').select('*');
-  
-  if (plantId) {
-    query = query.eq('plant_id', plantId);
-  }
-  
-  const { data, error } = await query.order('created_at', { ascending: false });
+  // For now, get all activities since plant_id doesn't exist in activities table
+  const { data, error } = await supabase
+    .from('activities')
+    .select('*')
+    .order('created_at', { ascending: false });
   
   if (error) throw error;
   return data || [];
@@ -249,7 +247,7 @@ export const updateKPIMetric = async (metricName: string, value: number, plantId
   return data;
 };
 
-// Meeting operations
+// Meeting operations - using raw SQL since tables aren't in types yet
 export const createMeeting = async (meeting: {
   title: string;
   description?: string;
@@ -258,21 +256,36 @@ export const createMeeting = async (meeting: {
   scheduled_date: string;
   location?: string;
 }): Promise<Meeting> => {
-  const { data, error } = await supabase
-    .from('meetings')
-    .insert({
-      ...meeting,
-      status: 'scheduled'
-    })
-    .select()
-    .single();
+  const { data, error } = await supabase.rpc('create_meeting', {
+    p_title: meeting.title,
+    p_description: meeting.description || '',
+    p_part_id: meeting.part_id,
+    p_assignee: meeting.assignee,
+    p_scheduled_date: meeting.scheduled_date,
+    p_location: meeting.location || '',
+  });
   
-  if (error) throw error;
+  if (error) {
+    console.log('RPC failed, trying direct insert');
+    // Fallback to direct insert
+    const { data: insertData, error: insertError } = await supabase
+      .from('meetings' as any)
+      .insert({
+        ...meeting,
+        status: 'scheduled'
+      })
+      .select()
+      .single();
+    
+    if (insertError) throw insertError;
+    return insertData;
+  }
+  
   return data;
 };
 
 export const getMeetings = async (partId?: string): Promise<Meeting[]> => {
-  let query = supabase.from('meetings').select('*');
+  let query = supabase.from('meetings' as any).select('*');
   
   if (partId) {
     query = query.eq('part_id', partId);
@@ -294,7 +307,7 @@ export const createDocument = async (document: {
   uploaded_by: string;
 }): Promise<Document> => {
   const { data, error } = await supabase
-    .from('documents')
+    .from('documents' as any)
     .insert(document)
     .select()
     .single();
@@ -304,7 +317,7 @@ export const createDocument = async (document: {
 };
 
 export const getDocuments = async (partId?: string): Promise<Document[]> => {
-  let query = supabase.from('documents').select('*');
+  let query = supabase.from('documents' as any).select('*');
   
   if (partId) {
     query = query.eq('part_id', partId);
@@ -318,7 +331,7 @@ export const getDocuments = async (partId?: string): Promise<Document[]> => {
 
 // Contact operations
 export const getContacts = async (name?: string): Promise<Contact[]> => {
-  let query = supabase.from('contacts').select('*');
+  let query = supabase.from('contacts' as any).select('*');
   
   if (name) {
     query = query.ilike('name', `%${name}%`);
@@ -338,7 +351,7 @@ export const createContact = async (contact: {
   role?: string;
 }): Promise<Contact> => {
   const { data, error } = await supabase
-    .from('contacts')
+    .from('contacts' as any)
     .insert(contact)
     .select()
     .single();

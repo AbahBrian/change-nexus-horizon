@@ -154,6 +154,25 @@ export const useSupabaseData = (selectedPlant: string) => {
     },
   });
 
+  const createDocumentMutation = useMutation({
+    mutationFn: createDocument,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['documents'] });
+      toast({
+        title: "Success",
+        description: "Document uploaded successfully",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to upload document",
+        variant: "destructive",
+      });
+      console.error('Document creation error:', error);
+    },
+  });
+
   return {
     // Data
     plants: plantsQuery.data || [],
@@ -173,6 +192,7 @@ export const useSupabaseData = (selectedPlant: string) => {
     updateTask: updateTaskMutation.mutate,
     createPart: createPartMutation.mutate,
     createMeeting: createMeetingMutation.mutate,
+    createDocument: createDocumentMutation.mutate,
     
     // Refetch functions
     refetchAll: () => {

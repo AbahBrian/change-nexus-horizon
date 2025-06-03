@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar, Clock } from 'lucide-react';
-import { createMeeting } from '@/services/dataService';
+import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useToast } from '@/hooks/use-toast';
 
 interface ScheduleMeetingSheetProps {
@@ -33,6 +33,7 @@ const ScheduleMeetingSheet: React.FC<ScheduleMeetingSheetProps> = ({
     location: '',
   });
   const { toast } = useToast();
+  const { createMeeting } = useSupabaseData('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +48,7 @@ const ScheduleMeetingSheet: React.FC<ScheduleMeetingSheetProps> = ({
 
     setIsLoading(true);
     try {
-      await createMeeting({
+      createMeeting({
         title: formData.title,
         description: formData.description,
         part_id: partId,

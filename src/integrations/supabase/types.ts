@@ -65,6 +65,83 @@ export type Database = {
           },
         ]
       }
+      contacts: {
+        Row: {
+          created_at: string | null
+          department: string | null
+          email: string
+          id: string
+          name: string
+          phone: string | null
+          role: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          department?: string | null
+          email: string
+          id?: string
+          name: string
+          phone?: string | null
+          role?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          department?: string | null
+          email?: string
+          id?: string
+          name?: string
+          phone?: string | null
+          role?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      documents: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          document_type: string
+          file_url: string | null
+          id: string
+          part_id: string | null
+          title: string
+          updated_at: string | null
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          document_type: string
+          file_url?: string | null
+          id?: string
+          part_id?: string | null
+          title: string
+          updated_at?: string | null
+          uploaded_by: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          document_type?: string
+          file_url?: string | null
+          id?: string
+          part_id?: string | null
+          title?: string
+          updated_at?: string | null
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_part_id_fkey"
+            columns: ["part_id"]
+            isOneToOne: false
+            referencedRelation: "parts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kpi_metrics: {
         Row: {
           created_at: string | null
@@ -99,6 +176,53 @@ export type Database = {
             columns: ["plant_id"]
             isOneToOne: false
             referencedRelation: "plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meetings: {
+        Row: {
+          assignee: string
+          created_at: string | null
+          description: string | null
+          id: string
+          location: string | null
+          part_id: string | null
+          scheduled_date: string
+          status: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          assignee: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          location?: string | null
+          part_id?: string | null
+          scheduled_date: string
+          status?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          assignee?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          location?: string | null
+          part_id?: string | null
+          scheduled_date?: string
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meetings_part_id_fkey"
+            columns: ["part_id"]
+            isOneToOne: false
+            referencedRelation: "parts"
             referencedColumns: ["id"]
           },
         ]
