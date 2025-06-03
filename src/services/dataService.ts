@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
 // Define types for your data
@@ -150,7 +149,7 @@ export const createPart = async (partData: any) => {
   return data;
 };
 
-export const updatePartStatus = async (partId: string, status: string) => {
+export const updatePartStatus = async (partId: string, status: 'initiated' | 'pending' | 'approved' | 'completed' | 'rejected' | 'on_hold') => {
   console.log(`Updating part ${partId} status to: ${status}`);
 
   const { data, error } = await supabase
@@ -194,9 +193,13 @@ export const getActivities = async (plantId: string | undefined): Promise<Activi
 export const createActivity = async (activityData: any) => {
   console.log('Creating activity:', activityData);
   
+  // Ensure status is a valid value
+  const validStatus: 'pending' | 'completed' | 'in_progress' | 'overdue' = 
+    activityData.status || 'pending';
+  
   const { data, error } = await supabase
     .from('activities')
-    .insert([activityData])
+    .insert([{ ...activityData, status: validStatus }])
     .select()
     .single();
 
@@ -229,9 +232,13 @@ export const getTasks = async (assignee: string): Promise<Task[]> => {
 export const createTask = async (taskData: any) => {
   console.log('Creating task:', taskData);
   
+  // Ensure status is a valid value
+  const validStatus: 'pending' | 'completed' | 'in_progress' | 'overdue' = 
+    taskData.status || 'pending';
+  
   const { data, error } = await supabase
     .from('tasks')
-    .insert([taskData])
+    .insert([{ ...taskData, status: validStatus }])
     .select()
     .single();
 
@@ -243,7 +250,7 @@ export const createTask = async (taskData: any) => {
   return data;
 };
 
-export const updateTaskStatus = async (taskId: string, status: string) => {
+export const updateTaskStatus = async (taskId: string, status: 'pending' | 'completed' | 'in_progress' | 'overdue') => {
   console.log(`Updating task ${taskId} status to: ${status}`);
 
   const { data, error } = await supabase
