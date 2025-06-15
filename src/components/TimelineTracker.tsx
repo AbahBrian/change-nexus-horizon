@@ -5,6 +5,8 @@ import { Activity } from 'lucide-react';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { convertPartsToTimeline, filterPartChanges } from '@/utils/timelineUtils';
 import { SelectedStage } from '@/types/timeline';
+
+// Import refactored components from ./timeline/
 import TimelineFilters from './timeline/TimelineFilters';
 import PartChangeCard from './timeline/PartChangeCard';
 import StageDetails from './timeline/StageDetails';
@@ -27,7 +29,6 @@ const TimelineTracker: React.FC<TimelineTrackerProps> = ({ selectedPlant, highli
     if (highlightPartId) {
       setSearchTerm('');
       setFilterStatus('all');
-      
       setTimeout(() => {
         const element = document.getElementById(`part-${highlightPartId}`);
         if (element) {
