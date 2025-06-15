@@ -40,42 +40,42 @@ const ContactAssigneeSheet: React.FC<ContactAssigneeSheetProps> = ({
   const loadContacts = async () => {
     setIsLoading(true);
     try {
--      const allContacts = await getContacts(assignee);
-+      const allContacts = await getContacts();
+      const allContacts = await getContacts();
       setContacts(allContacts);
-      
+
       // Try to find exact match first
-      const exactMatch = allContacts.find(contact => 
+      const exactMatch = allContacts.find(contact =>
         contact.name.toLowerCase() === assignee.toLowerCase()
       );
-      
+
       if (exactMatch) {
         setSelectedContact(exactMatch);
       } else if (allContacts.length > 0) {
         setSelectedContact(allContacts[0]);
+      } else {
+        // Fallback: create contact if list is empty
+        setSelectedContact({
+          id: 'temp',
+          name: assignee,
+          email: `${assignee.toLowerCase().replace(/\s+/g, '.')}@company.com`,
+          phone: 'Not available',
+          department: 'Unknown',
+          role: 'Team Member',
+          created_at: new Date().toISOString(),
+        });
       }
     } catch (error) {
       console.error('Error loading contacts:', error);
-      // Create a default contact if none found
--      setSelectedContact({
--        id: 'temp',
--        name: assignee,
--        email: `${assignee.toLowerCase().replace(/\s+/g, '.')}@company.com`,
--        phone: 'Not available',
--        department: 'Unknown',
--        role: 'Team Member',
--        created_at: new Date().toISOString(),
--        updated_at: new Date().toISOString(),
--      });
-+      setSelectedContact({
-+        id: 'temp',
-+        name: assignee,
-+        email: `${assignee.toLowerCase().replace(/\s+/g, '.')}@company.com`,
-+        phone: 'Not available',
-+        department: 'Unknown',
-+        role: 'Team Member',
-+        created_at: new Date().toISOString(),
-+      });
+      // Fallback: create contact on error
+      setSelectedContact({
+        id: 'temp',
+        name: assignee,
+        email: `${assignee.toLowerCase().replace(/\s+/g, '.')}@company.com`,
+        phone: 'Not available',
+        department: 'Unknown',
+        role: 'Team Member',
+        created_at: new Date().toISOString(),
+      });
     } finally {
       setIsLoading(false);
     }
@@ -152,19 +152,16 @@ const ContactAssigneeSheet: React.FC<ContactAssigneeSheetProps> = ({
                       )}
                     </div>
                   </div>
-                  
                   <div className="flex items-center gap-3">
                     <Mail className="w-4 h-4 text-slate-600" />
                     <p className="text-sm">{selectedContact.email}</p>
                   </div>
-                  
                   {selectedContact.phone && (
                     <div className="flex items-center gap-3">
                       <Phone className="w-4 h-4 text-slate-600" />
                       <p className="text-sm">{selectedContact.phone}</p>
                     </div>
                   )}
-                  
                   {selectedContact.department && (
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary">{selectedContact.department}</Badge>
@@ -252,3 +249,5 @@ const ContactAssigneeSheet: React.FC<ContactAssigneeSheetProps> = ({
 };
 
 export default ContactAssigneeSheet;
+
+// ... end of file
