@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
@@ -39,12 +38,12 @@ const ViewDocumentsSheet: React.FC<ViewDocumentsSheetProps> = ({
     if (isOpen) {
       loadDocuments();
     }
-  }, [isOpen, partId]);
+  }, [isOpen]);
 
   const loadDocuments = async () => {
     setIsLoading(true);
     try {
-      const docs = await getDocuments(partId);
+      const docs = await getDocuments();
       setDocuments(docs);
     } catch (error) {
       console.error('Error loading documents:', error);

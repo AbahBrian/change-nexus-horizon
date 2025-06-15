@@ -40,7 +40,8 @@ const ContactAssigneeSheet: React.FC<ContactAssigneeSheetProps> = ({
   const loadContacts = async () => {
     setIsLoading(true);
     try {
-      const allContacts = await getContacts(assignee);
+-      const allContacts = await getContacts(assignee);
++      const allContacts = await getContacts();
       setContacts(allContacts);
       
       // Try to find exact match first
@@ -56,16 +57,25 @@ const ContactAssigneeSheet: React.FC<ContactAssigneeSheetProps> = ({
     } catch (error) {
       console.error('Error loading contacts:', error);
       // Create a default contact if none found
-      setSelectedContact({
-        id: 'temp',
-        name: assignee,
-        email: `${assignee.toLowerCase().replace(/\s+/g, '.')}@company.com`,
-        phone: 'Not available',
-        department: 'Unknown',
-        role: 'Team Member',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      });
+-      setSelectedContact({
+-        id: 'temp',
+-        name: assignee,
+-        email: `${assignee.toLowerCase().replace(/\s+/g, '.')}@company.com`,
+-        phone: 'Not available',
+-        department: 'Unknown',
+-        role: 'Team Member',
+-        created_at: new Date().toISOString(),
+-        updated_at: new Date().toISOString(),
+-      });
++      setSelectedContact({
++        id: 'temp',
++        name: assignee,
++        email: `${assignee.toLowerCase().replace(/\s+/g, '.')}@company.com`,
++        phone: 'Not available',
++        department: 'Unknown',
++        role: 'Team Member',
++        created_at: new Date().toISOString(),
++      });
     } finally {
       setIsLoading(false);
     }
